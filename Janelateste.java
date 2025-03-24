@@ -20,7 +20,7 @@ public class Janelateste extends JPanel implements KeyListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Desenha um fundo
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         // Desenha um círculo
@@ -32,8 +32,6 @@ public class Janelateste extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         // Move o círculo dependendo da tecla pressionada
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:    y -= 10; break; // Move para cima
-            case KeyEvent.VK_DOWN:  y += 10; break; // Move para baixo
             case KeyEvent.VK_LEFT:  x -= 10; break; // Move para a esquerda
             case KeyEvent.VK_RIGHT: x += 10; break; // Move para a direita
         }
