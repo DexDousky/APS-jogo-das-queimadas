@@ -1,6 +1,6 @@
 import javax.swing.JFrame; //necessario para criar a janela.
 
-public class jogo {
+public class JFrameogo {
 
     public static void main(String[] args) {
         JFrame janela = new JFrame();
