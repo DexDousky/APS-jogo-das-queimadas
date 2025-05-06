@@ -10,10 +10,6 @@ public class Main {
         window.setSize(1280, 740);
         window.setLocationRelativeTo(null); // vai aparecer no centro da tela
         window.setVisible(true); // vai aparecer
-<<<<<<< HEAD
 
-        //2050 cavalos
-=======
->>>>>>> 3561cb391add7d859b1b7a9f8c4e901c39a7eef2
     }
 }
