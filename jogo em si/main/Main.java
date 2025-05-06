@@ -11,5 +11,6 @@ public class Main {
         window.setLocationRelativeTo(null); // vai aparecer no centro da tela
         window.setVisible(true); // vai aparecer
 
+
     }
 }
