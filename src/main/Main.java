@@ -13,7 +13,7 @@ public class Main {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("FUNNY");
+        window.setTitle("Queimada Crash");
         window.setSize(1280, 740);
         window.setLocationRelativeTo(null);
         
