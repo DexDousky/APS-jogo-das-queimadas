@@ -52,7 +52,7 @@ class GamePanel extends JPanel implements KeyListener {
     private void carregarImagem() {
         try {
             // Caminho corrigido para a imagem
-            InputStream inputStream = getClass().getResourceAsStream("assets/personagemprincipalplaceholder.png");
+            InputStream inputStream = getClass().getResourceAsStream("main.assets.personagemprincipalplaceholder.png");
             if (inputStream != null) {
                 imagem = ImageIO.read(inputStream);
             } else {
