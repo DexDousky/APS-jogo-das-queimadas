@@ -1,12 +1,12 @@
 package main;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,8 +26,8 @@ public class Main {
 
 class GamePanel extends JPanel implements KeyListener {
     private BufferedImage imagem;
-    private int posX = 100;
-    private int posY = 100;
+    private int posX = 602;
+    private int posY = 630;
     private final int VELOCIDADE = 10;
     private final boolean[] keysPressed = new boolean[256];
     private final Timer gameTimer;

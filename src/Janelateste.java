@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 
 public class Janelateste extends JPanel implements KeyListener {
 
-    private int x = 349; // posição lateral
-    private int y = 497; // posição da altura
+    private int x = 160; // posição lateral
+    private int y = 160; // posição da altura
 
     public Janelateste() {
         addKeyListener(this);
