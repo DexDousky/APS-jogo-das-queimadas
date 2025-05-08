@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "ImageMain",
+            "request": "launch",
+            "mainClass": "main.ImageMain",
+            "projectName": "APS-jogo-das-queimadas_bfedf2a5"
+        },
+        {
             "type": "jdk",
             "request": "launch",
             "name": "Launch Java App"
