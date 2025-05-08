@@ -1,14 +1,14 @@
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Janelateste extends JPanel implements KeyListener {
 
-    private int x = 100; 
-    private int y = 100;
+    private int x = 349; // posição lateral
+    private int y = 497; // posição da altura
 
     public Janelateste() {
         addKeyListener(this);
