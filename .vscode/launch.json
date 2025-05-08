@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "main.Main",
+            "projectName": "APS-jogo-das-queimadas_5842e2e1"
+        },
+        {
+            "type": "java",
             "name": "ImageMain",
             "request": "launch",
             "mainClass": "main.ImageMain",
