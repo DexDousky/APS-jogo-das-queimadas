@@ -26,9 +26,12 @@ public class Main {
     }
 }
 class GamePanel extends JPanel implements KeyListener {
-    private BufferedImage imagem;
-    private int posX = 575; // Centralizar depois
+    private BufferedImage imagem; // Imagem do personagem
+    private ImageIcon fundoImagem; // Imagem de fundo
+
+    private int posX = 575; //(Centralizar depois)
     private int posY = 600;
+    
     private final int VELOCIDADE = 20;
     private final boolean[] keysPressed = new boolean[256];
     private final Timer gameTimer;
@@ -36,9 +39,8 @@ class GamePanel extends JPanel implements KeyListener {
     //Local do personagem
 
     public GamePanel() {
-        carregarImagem(); // Carregar imagem
-        
-        setBackground(Color.BLACK);// Configurações do painel
+        carregarImagem(); // Carregar imagem();
+        setBackground(Color.black);// Configurações do painel
         setFocusable(true);
         addKeyListener(this);
         
@@ -52,14 +54,25 @@ class GamePanel extends JPanel implements KeyListener {
 
     private void carregarImagem() {
         try {
+
             // Caminho corrigido para a imagem
+
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("main/assets/personagemprincipalplaceholder.png");
             if (inputStream != null) {
                 imagem = ImageIO.read(inputStream);
             } else {
                 System.err.println("Erro: Imagem não encontrada! ");
-                
             }
+
+            // Imagem fundo
+
+            java.net.URL fundoURL = getClass().getClassLoader().getResource("main/assets/yippe.gif");
+            if (fundoURL != null) {
+                fundoImagem = new ImageIcon(fundoURL); 
+            } else {
+                System.err.println("Erro: Fundo animado não encontrado!");
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,6 +81,14 @@ class GamePanel extends JPanel implements KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+         // Desenhar fundo animado
+        if (fundoImagem != null) {
+            g.drawImage(fundoImagem.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+
+
+        // Desenhar fundo
         if (imagem != null) {
             g.drawImage(imagem, posX, posY, 100, 100, this);
         }
