@@ -27,7 +27,7 @@ public class Main {
 }
 class GamePanel extends JPanel implements KeyListener {
     private BufferedImage imagem;
-    private int posX = 575;
+    private int posX = 575; // Centralizar depois
     private int posY = 600;
     private final int VELOCIDADE = 20;
     private final boolean[] keysPressed = new boolean[256];
