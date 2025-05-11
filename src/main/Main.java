@@ -57,24 +57,22 @@ class GamePanel extends JPanel implements KeyListener {
             if (inputStream != null) {
                 imagem = ImageIO.read(inputStream);
             } else {
-                System.err.println("Erro: Imagem não encontrada! Criando placeholder...");
-                criarPlaceholder();
+                System.err.println("Erro: Imagem não encontrada! ");
+                
             }
         } catch (IOException e) {
-            System.err.println("Erro ao carregar imagem:");
             e.printStackTrace();
-            criarPlaceholder();
         }
     }
-
-    private void criarPlaceholder() {
-        imagem = new BufferedImage(50, 50, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = imagem.createGraphics();
-        g2d.setColor(Color.RED);
-        g2d.fillRect(0, 0, 50, 50);
-        g2d.dispose();
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (imagem != null) {
+            g.drawImage(imagem, posX, posY, 100, 100, this);
+        }
     }
-
+    
     private void atualizarPosicao() {
         // Movimento vertical
         if (keysPressed[KeyEvent.VK_UP]) posY -= VELOCIDADE;
@@ -88,14 +86,6 @@ class GamePanel extends JPanel implements KeyListener {
         if (imagem != null) {
             posX = Math.max(0, Math.min(posX, getWidth() - imagem.getWidth()));
             posY = Math.max(0, Math.min(posY, getHeight() - imagem.getHeight()));
-        }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (imagem != null) {
-            g.drawImage(imagem, posX, posY, this);
         }
     }
 
