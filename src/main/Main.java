@@ -27,9 +27,9 @@ public class Main {
 }
 class GamePanel extends JPanel implements KeyListener {
     private BufferedImage imagem;
-    private int posX = 594;
-    private int posY = 630;
-    private final int VELOCIDADE = 10;
+    private int posX = 575;
+    private int posY = 600;
+    private final int VELOCIDADE = 20;
     private final boolean[] keysPressed = new boolean[256];
     private final Timer gameTimer;
 
@@ -84,8 +84,12 @@ class GamePanel extends JPanel implements KeyListener {
         
         // Manter dentro dos limites da tela
         if (imagem != null) {
-            posX = Math.max(0, Math.min(posX, getWidth() - imagem.getWidth()));
-            posY = Math.max(0, Math.min(posY, getHeight() - imagem.getHeight()));
+
+            int UpdAlt = 100;
+            int UpdLarg = 100;
+            posX = Math.max(0, Math.min(posX, getWidth() - UpdLarg));
+            posY = Math.max(0, Math.min(posY, getHeight() - UpdAlt));
+       
         }
     }
 
