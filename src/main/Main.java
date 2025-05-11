@@ -14,30 +14,31 @@ public class Main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("Queimada Crash");
-        window.setSize(1280, 740);
+        window.setSize(1260, 740);
         window.setLocationRelativeTo(null);
         
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
         window.setVisible(true);
         gamePanel.requestFocusInWindow();
+
+        // Janela do game
     }
 }
-
 class GamePanel extends JPanel implements KeyListener {
     private BufferedImage imagem;
-    private int posX = 602;
+    private int posX = 594;
     private int posY = 630;
     private final int VELOCIDADE = 10;
     private final boolean[] keysPressed = new boolean[256];
     private final Timer gameTimer;
 
+    //Local do personagem
+
     public GamePanel() {
-        // Carregar imagem
-        carregarImagem();
+        carregarImagem(); // Carregar imagem
         
-        // Configurações do painel
-        setBackground(Color.BLACK);
+        setBackground(Color.BLACK);// Configurações do painel
         setFocusable(true);
         addKeyListener(this);
         
@@ -52,7 +53,7 @@ class GamePanel extends JPanel implements KeyListener {
     private void carregarImagem() {
         try {
             // Caminho corrigido para a imagem
-            InputStream inputStream = getClass().getResourceAsStream("main.assets.personagemprincipalplaceholder.png");
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("main/assets/personagemprincipalplaceholder.png");
             if (inputStream != null) {
                 imagem = ImageIO.read(inputStream);
             } else {
