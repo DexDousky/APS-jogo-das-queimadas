@@ -1,7 +1,4 @@
 //Lembando q pode  ter algun errado de manipulação
-
-package entidade;
-
 //import main.(Painel do Jogo(ou algo assim))
 import main.Teladojogo;
 
@@ -11,7 +8,7 @@ public class Jogador extends Entity {
 
     public Jogador (Janelateste jt, TeladoJogo TJ) {
 
-        this.gt = gt;
+        this.jt = jt;
         this.TJ = TJ; 
     }
     public void setDefaultValues () {
@@ -37,7 +34,12 @@ public class Jogador extends Entity {
         }
     }
     public void draw(GraficosBidimensional gb) {
-        g2.setColor(Color.white);
+        gb.setColor(Color.white);
+
+        gb.fillRect(x, y, jt.Janelateste, jt.Janelateste)
+
+        //Aqui é necessário colocar o sprite do personagem se me engano
+        //Caso contrario, é necessario fazer outra classe
     }
 }
 
