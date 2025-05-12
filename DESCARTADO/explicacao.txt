@@ -1,0 +1,11 @@
+Matheus falando aqui.
+
+eu tinha dado a ideia de usar xml para fazer as animações
+dos personagens e objetos na tela porem, o João Victor 
+conseguiu descobrir uma forma de colocar GIFs (literalmente um formato de imagem que possue quadros assim como um video em mp4, porem sem audio)
+e isso facilitou muito nossa vida com questao de planejamento porque era só fazer as gifs doque a gente precisava pra colocar no jogo!
+
+
+
+mas mesmo assim eu vou deixar disponivel um pouco doq eu tava tentando fazer pra leitura dos dados de qualquer folha de sprites em xml fosse lida com sucesso
+e assim executada na janela grafica do game.
