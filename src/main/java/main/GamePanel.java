@@ -47,7 +47,7 @@ class GamePanel extends JPanel implements KeyListener {
     private void carregarRecursos() {
     try {
         // carregar a fonte customizada que criamos para o jogo
-        InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/Uicool.ttf");
+        InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("/assets/Uicool.ttf");
         if (fonteStream == null) {
             System.err.println("ERRO: Uicool.ttf não encontrado em assets/!");
         } else {
@@ -57,7 +57,7 @@ class GamePanel extends JPanel implements KeyListener {
         }
 
         // carregar o background do titulo
-        InputStream tituloStream = getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png");
+        InputStream tituloStream = getClass().getClassLoader().getResourceAsStream("/assets/TITULO_bg.png");
         if (tituloStream == null) {
             System.err.println("ERRO: TITULO_bg.png não encontrado em assets/!");
         } else {
@@ -65,7 +65,7 @@ class GamePanel extends JPanel implements KeyListener {
         }
 
         // carregar o personagem
-        InputStream personagemStream = getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png");
+        InputStream personagemStream = getClass().getClassLoader().getResourceAsStream("/assets/personagemprincipalplaceholder.png");
         if (personagemStream == null) {
             System.err.println("ERRO: personagemprincipalplaceholder.png não encontrado em assets/!");
         } else {
@@ -73,35 +73,35 @@ class GamePanel extends JPanel implements KeyListener {
         }
         // icones dos creditos
 
-        InputStream MatheusStream = getClass().getClassLoader().getResourceAsStream("assets/Matheus.png");
+        InputStream MatheusStream = getClass().getClassLoader().getResourceAsStream("/assets/Matheus.png");
         if (MatheusStream == null) {
             System.err.println("ERRO: Matheus.png não encontrado em assets/!");
         } else {
             personagemImagem = ImageIO.read(MatheusStream);
         }
         
-        InputStream JoaoStream = getClass().getClassLoader().getResourceAsStream("assets/João.png");
+        InputStream JoaoStream = getClass().getClassLoader().getResourceAsStream("/assets/João.png");
         if (JoaoStream == null) {
             System.err.println("ERRO: João.png não encontrado em assets/!");
         } else {
             personagemImagem = ImageIO.read(JoaoStream);
         }
 
-        InputStream AugustoStream = getClass().getClassLoader().getResourceAsStream("assets/Augusto.png");
+        InputStream AugustoStream = getClass().getClassLoader().getResourceAsStream("/assets/Augusto.png");
         if (AugustoStream == null) {
             System.err.println("ERRO: Augusto.png não encontrado em assets/!");
         } else {
             personagemImagem = ImageIO.read(AugustoStream);
         }
         
-        InputStream DiogoStream = getClass().getClassLoader().getResourceAsStream("assets/Diogo.png");
+        InputStream DiogoStream = getClass().getClassLoader().getResourceAsStream("/assets/Diogo.png");
         if (DiogoStream == null) {
             System.err.println("ERRO: Diogo.png não encontrado em assets/!");
         } else {
             personagemImagem = ImageIO.read(DiogoStream);
         }
 
-        InputStream MariaStream = getClass().getClassLoader().getResourceAsStream("assets/Maria.png");
+        InputStream MariaStream = getClass().getClassLoader().getResourceAsStream("/assets/Maria.png");
         if (MariaStream == null) {
             System.err.println("ERRO: Maria.png não encontrado em assets/!");
         } else {
@@ -109,7 +109,7 @@ class GamePanel extends JPanel implements KeyListener {
         }
 
         // Carregar o fundo animado
-        java.net.URL fundoURL = getClass().getClassLoader().getResource("assets/yippe.gif");
+        java.net.URL fundoURL = getClass().getClassLoader().getResource("/assets/yippe.gif");
         if (fundoURL == null) {
             System.err.println("ERRO: yippe.gif não encontrado em assets/!");
         } else {
