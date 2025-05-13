@@ -1,6 +1,6 @@
 {
     "java.project.sourcePaths": [
-        "src/assets",
-        "src/main"
-    ],
+        "src/main/java",
+        "src/main/resources/main"
+    ]
 }

@@ -46,37 +46,80 @@ class GamePanel extends JPanel implements KeyListener {
 
     private void carregarRecursos() {
     try {
-        // Fonte customizada
-        InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/Uicool.ttf");
-        if (fonteStream != null) {
-            customFont = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
-            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(customFont);
-        } else {
+        // carregar a fonte customizada que criamos para o jogo
+        InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("/assets/Uicool.ttf");
+        if (fonteStream == null) {
             System.err.println("ERRO: Uicool.ttf não encontrado em assets/!");
+        } else {
+            customFont = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(customFont);
         }
 
-        // Fundo do título
-        tituloBackground = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
+        // carregar o background do titulo
+        InputStream tituloStream = getClass().getClassLoader().getResourceAsStream("/assets/TITULO_bg.png");
+        if (tituloStream == null) {
+            System.err.println("ERRO: TITULO_bg.png não encontrado em assets/!");
+        } else {
+            tituloBackground = ImageIO.read(tituloStream);
+        }
 
-        // Personagens
-        personagemImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png"));
+        // carregar o personagem
+        InputStream personagemStream = getClass().getClassLoader().getResourceAsStream("/assets/personagemprincipalplaceholder.png");
+        if (personagemStream == null) {
+            System.err.println("ERRO: personagemprincipalplaceholder.png não encontrado em assets/!");
+        } else {
+            personagemImagem = ImageIO.read(personagemStream);
+        }
+        // icones dos creditos
 
-        BufferedImage matheusImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Matheus.png"));
-        BufferedImage joaoImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Joao.png")); 
-        BufferedImage augustoImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Augusto.png"));
-        BufferedImage diogoImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Diogo.png"));
-        BufferedImage mariaImg = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Maria.png"));
+        InputStream MatheusStream = getClass().getClassLoader().getResourceAsStream("/assets/Matheus.png");
+        if (MatheusStream == null) {
+            System.err.println("ERRO: Matheus.png não encontrado em assets/!");
+        } else {
+            personagemImagem = ImageIO.read(MatheusStream);
+        }
+        
+        InputStream JoaoStream = getClass().getClassLoader().getResourceAsStream("/assets/João.png");
+        if (JoaoStream == null) {
+            System.err.println("ERRO: João.png não encontrado em assets/!");
+        } else {
+            personagemImagem = ImageIO.read(JoaoStream);
+        }
 
-        // Fundo animado
-        java.net.URL fundoURL = getClass().getClassLoader().getResource("assets/yippe.gif");
-        fundoImagem = (fundoURL != null) ? new ImageIcon(fundoURL) : null;
+        InputStream AugustoStream = getClass().getClassLoader().getResourceAsStream("/assets/Augusto.png");
+        if (AugustoStream == null) {
+            System.err.println("ERRO: Augusto.png não encontrado em assets/!");
+        } else {
+            personagemImagem = ImageIO.read(AugustoStream);
+        }
+        
+        InputStream DiogoStream = getClass().getClassLoader().getResourceAsStream("/assets/Diogo.png");
+        if (DiogoStream == null) {
+            System.err.println("ERRO: Diogo.png não encontrado em assets/!");
+        } else {
+            personagemImagem = ImageIO.read(DiogoStream);
+        }
+
+        InputStream MariaStream = getClass().getClassLoader().getResourceAsStream("/assets/Maria.png");
+        if (MariaStream == null) {
+            System.err.println("ERRO: Maria.png não encontrado em assets/!");
+        } else {
+            personagemImagem = ImageIO.read(MariaStream);
+        }
+
+        // Carregar o fundo animado
+        java.net.URL fundoURL = getClass().getClassLoader().getResource("/assets/yippe.gif");
+        if (fundoURL == null) {
+            System.err.println("ERRO: yippe.gif não encontrado em assets/!");
+        } else {
+            fundoImagem = new ImageIcon(fundoURL);
+        }
 
     } catch (IOException | FontFormatException e) {
         e.printStackTrace();
     }
 }
-
-    // Configurações do painel
 
     private void configurarPainel() {
         setBackground(Color.BLACK);
