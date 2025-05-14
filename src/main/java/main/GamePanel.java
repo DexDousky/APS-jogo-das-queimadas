@@ -27,7 +27,7 @@ class GamePanel extends JPanel implements KeyListener {
     
     // elementos da tela de título
     private final String[] opcoes = {"Iniciar", "Historia","Creditos"};
-    private final String [] pessoas = {"Matheus Belarmino (Dex Dousky)", "Joao Victor (Sr.DarkFrame)", "Augusto (Vortex)", "Diogo Freitas (BlueHollow)", "Maria (Vortex)"};
+    private final String [] pessoas = {"Matheus Belarmino (Dex Dousky)", "Joao Victor (Sr DarkFrame)", "Augusto ( GUGU )", "Diogo Freitas (BlueHollow)", "Maria (Vortex)"};
     private int opcaoSelecionada = 0;
     
     // elementos do jogo
@@ -56,6 +56,7 @@ class GamePanel extends JPanel implements KeyListener {
             ge.registerFont(customFont);
         }
 
+    
         // carregar o background do titulo
         InputStream tituloStream = getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png");
         if (tituloStream == null) {
@@ -64,13 +65,7 @@ class GamePanel extends JPanel implements KeyListener {
             tituloBackground = ImageIO.read(tituloStream);
         }
 
-        // carregar o personagem
-        InputStream personagemStream = getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png");
-        if (personagemStream == null) {
-            System.err.println("ERRO: personagemprincipalplaceholder.png não encontrado em assets/!");
-        } else {
-            personagemImagem = ImageIO.read(personagemStream);
-        }
+    
         // icones dos creditos
 
         InputStream MatheusStream = getClass().getClassLoader().getResourceAsStream("assets/Matheus.png");
@@ -115,7 +110,13 @@ class GamePanel extends JPanel implements KeyListener {
         } else {
             fundoImagem = new ImageIcon(fundoURL);
         }
-
+            // carregar o personagem
+        InputStream personagemStream = getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png");
+        if (personagemStream == null) {
+            System.err.println("ERRO: personagemprincipalplaceholder.png não encontrado em assets/!");
+        } else {
+            personagemImagem = ImageIO.read(personagemStream);
+        }
     } catch (IOException | FontFormatException e) {
         e.printStackTrace();
     }
@@ -157,15 +158,41 @@ class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    private void desenharCreditos(Graphics g) {
-        // sobreposição semi-transparente
+ private void desenharCreditos(Graphics g) {
+
+        if (fundoImagem != null) {
+            g.drawImage(fundoImagem.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+        if (customFont != null) {
+            g.setFont(customFont);
+        }
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0, getWidth(), getHeight());
-        
-        // texto
         g.setColor(Color.WHITE);
-        desenharTextoCentralizado(g, "Place holder dos creditos", 300);
-        desenharTextoCentralizado(g, "[Pressione ESPAÇO para voltar]", 600);
+        desenharTextoCentralizado(g, "Creditos", 40);
+        
+
+        // exibe cada pessoa e seu ícone
+        int y0 = 50;
+        BufferedImage[] imgs = new BufferedImage[5];
+        try {
+            imgs[0] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Matheus.png"));
+            imgs[1] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/João.png"));
+            imgs[2] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Augusto.png"));
+            imgs[3] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Diogo.png"));
+            imgs[4] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/Maria.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    
+
+        for (int i = 0; i < pessoas.length; i++) {
+            if (imgs[i] != null) {
+                g.drawImage(imgs[i], 50, 40 + i * 98, 104, 104, this);
+            }
+            g.drawString(pessoas[i], 190, y0 + 98 + i * 90);
+        }
+        g.drawString("Pressione ESPACO para voltar",600,690);
     }
 
     private void desenharTelaTitulo(Graphics g) {
