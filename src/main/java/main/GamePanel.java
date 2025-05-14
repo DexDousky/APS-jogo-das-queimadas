@@ -1,16 +1,16 @@
 package main;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
+import javax.swing.*;
 
 
-//inacabado (POR ENQUANTO!! ESTAMOS CHEGANDO LA!!)
+//inacabado (POR ENQUANTO!! ESTAMOS CHEGANDO LA!!) 
+//Detalhe, agora está funcionando pra mim também! tá mostrando as Imagens em minha tela guys, GG, não tá dando mais o problema lá que deu, vamos terminar o game.
 
 class GamePanel extends JPanel implements KeyListener {
     // estados do jogo
