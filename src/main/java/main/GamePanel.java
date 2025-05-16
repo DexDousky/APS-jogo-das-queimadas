@@ -100,14 +100,15 @@ class GamePanel extends JPanel implements KeyListener {
         // carregar o background do titulo
         InputStream tituloStream = getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png");
         if (tituloStream == null) {
-            System.err.println("ERRO: TITULO_bg.png não encontrado em assets/icones/!");
+            System.err.println("ERRO: TITULO_bg.png não encontrado em assets/!");
+            
         } else {
             TituloBG = ImageIO.read(tituloStream);
         }
 
         InputStream credStream = getClass().getClassLoader().getResourceAsStream("assets/credfundo.png");
         if (credStream == null) {
-            System.err.println("ERRO: TITULO_bg.png não encontrado em assets/icones/!");
+            System.err.println("ERRO: credfundo.png não encontrado em assets/!");
         } else {
             credBG = ImageIO.read(credStream);
         }
@@ -172,10 +173,10 @@ class GamePanel extends JPanel implements KeyListener {
         } else {
             Gato = new ImageIcon(Gatogif);
         }
-    } catch (IOException | FontFormatException e) {
-        e.printStackTrace();
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     private void configurarPainel() {
         setBackground(Color.BLACK);
@@ -215,71 +216,71 @@ class GamePanel extends JPanel implements KeyListener {
         }
     }
 
- private void desenharCreditos(Graphics g) {
+    private void desenharCreditos(Graphics g) {
+            
+            if (credBG != null) {
+                g.drawImage(credBG, 0, 0, getWidth(), getHeight(), this);
+            }
+            if (FonteCustomizada != null) {
+                g.setFont(FonteCustomizada);
+            }
+
+            // tipo de grafico (nova cor(Red: tanto faz, Green: tanto faz, Blue: tanto faz, Alpha: tanto faz))
+            g.setColor(new Color(0, 0, 0, 200));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.WHITE);
+            desenharTextoCentralizado(g, "Creditos", 40);
+
+            // exibe cada pessoa e seu ícone
         
-        if (credBG != null) {
-            g.drawImage(credBG, 0, 0, getWidth(), getHeight(), this);
+            BufferedImage[] imgs = new BufferedImage[] {
+                MatheusImagem, 
+                JoaoImagem, 
+                AugustoImagem, 
+                DiogoImagem, 
+                MariaImagem
+            };
+            
+            // configs do dimensionamento dos icones de credito
+
+            int Largura = 200;                                      // Largura fixa
+            int Altura = (int) (342.0 / 477 * Largura);             // mesmo alterado, matem a proporção original 477x342
+            int EspacamentoVertical = 128;                          // espaço entre os ícones
+            int yBase = 30;                                        // posição Y inicial do ícone
+            int margemEsquerda = 50;                                // alto explicativo, "duh".
+            
+            
+
+            // exibe cada pessoa e seu ícone
+            if (SegFonteCustomizada != null) {
+                g.setFont(SegFonteCustomizada);
+            }
+
+            FontMetrics fm = g.getFontMetrics();                    // pega a medida da fonte escolhida acima
+            
+            for (int i = 0; i < pessoas.length; i++) {
+            
+            // Posição do ícone
+            int xIcone = margemEsquerda;
+            int yIcone = yBase + (i * EspacamentoVertical);
+            
+            // Desenha o ícone redimensionado proporcionalmente
+            if (imgs[i] != null) {
+                g.drawImage(imgs[i], xIcone, yIcone, Largura, Altura, this);
+            }
+            
+            // Calcula posição Y do texto (centralizado verticalmente com o ícone)
+            int yTexto = yIcone + (Altura - fm.getHeight()) / 2 + fm.getAscent();
+            
+            // Posição X do texto (ícone + margem)
+            int xTexto = xIcone + Largura + 20;
+            
+            g.drawString(pessoas[i], xTexto, yTexto);
         }
-        if (FonteCustomizada != null) {
-            g.setFont(FonteCustomizada);
-        }
 
-        // tipo de grafico (nova cor(Red: tanto faz, Green: tanto faz, Blue: tanto faz, Alpha: tanto faz))
-        g.setColor(new Color(0, 0, 0, 200));
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.WHITE);
-        desenharTextoCentralizado(g, "Creditos", 40);
-
-        // exibe cada pessoa e seu ícone
-    
-        BufferedImage[] imgs = new BufferedImage[] {
-            MatheusImagem, 
-            JoaoImagem, 
-            AugustoImagem, 
-            DiogoImagem, 
-            MariaImagem
-        };
-        
-        // configs do dimensionamento dos icones de credito
-
-        int Largura = 200;                                      // Largura fixa
-        int Altura = (int) (342.0 / 477 * Largura);             // mesmo alterado, matem a proporção original 477x342
-        int EspacamentoVertical = 128;                          // espaço entre os ícones
-        int yBase = 30;                                        // posição Y inicial do ícone
-        int margemEsquerda = 50;                                // alto explicativo, "duh".
-        
-        
-
-        // exibe cada pessoa e seu ícone
-        if (SegFonteCustomizada != null) {
-            g.setFont(SegFonteCustomizada);
-        }
-
-        FontMetrics fm = g.getFontMetrics();                    // pega a medida da fonte escolhida acima
-        
-        for (int i = 0; i < pessoas.length; i++) {
-        
-        // Posição do ícone
-        int xIcone = margemEsquerda;
-        int yIcone = yBase + (i * EspacamentoVertical);
-        
-        // Desenha o ícone redimensionado proporcionalmente
-        if (imgs[i] != null) {
-            g.drawImage(imgs[i], xIcone, yIcone, Largura, Altura, this);
-        }
-        
-        // Calcula posição Y do texto (centralizado verticalmente com o ícone)
-        int yTexto = yIcone + (Altura - fm.getHeight()) / 2 + fm.getAscent();
-        
-        // Posição X do texto (ícone + margem)
-        int xTexto = xIcone + Largura + 20;
-        
-        g.drawString(pessoas[i], xTexto, yTexto);
+        // Mensagem de volta
+        g.drawString("Pressione ESPAÇO para voltar", 600, 690);
     }
-
-    // Mensagem de volta
-    g.drawString("Pressione ESPAÇO para voltar", 600, 690);
-}
 
     private void desenharTelaTitulo(Graphics g) {
         posX = 575;
@@ -352,6 +353,9 @@ class GamePanel extends JPanel implements KeyListener {
                     break;
                 case KeyEvent.VK_ENTER:
                     executarOpcao();
+                    break;
+                case KeyEvent.VK_G:
+                    EstadoAtual = GameState.CREDITOS;
                     break;
             }
         } else if (EstadoAtual == GameState.HISTORIA && tecla == KeyEvent.VK_SPACE) {
