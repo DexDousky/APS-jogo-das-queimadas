@@ -1,3 +1,9 @@
+package main;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
 class SpritesAparte {
     private BufferedImage[] arvore;
     private int frameAtual;
@@ -13,17 +19,17 @@ class SpritesAparte {
     private void carregarSprites() {
         try {
             
-        Arvore[0] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreNormal.png"));
-        Arvore[1] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreMeioQueimada.png"));
-        Arvore[2] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreQueimando.png"));
-        Arvore[1] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreCarbonizada.png"));
+        arvore[0] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreNormal.png"));
+        arvore[1] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreMeioQueimada.png"));
+        arvore[2] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreQueimando.png"));
+        arvore[1] = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreCarbonizada.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public atualizar(int novaVar){
+    public void atualizar(int novaVar){
 
-        this.variacao = Math.abs(novaVar) % arvore.Length;
+        this.variacao = Math.abs(novaVar) % arvore.length;
     }
 
 }

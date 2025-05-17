@@ -15,25 +15,9 @@ import javax.swing.*;
 class GamePanel extends JPanel implements KeyListener {
     // estados do jogo
     //utilizameos private enum para evitar que o usuario
-    private enum GameState { TITULO, JOGANDO, HISTORIA, CREDITOS }
+    private enum GameState { TITULO, JOGANDO, HISTORIA, CREDITOS, EASTEREGG }
     // estado inicial do jogo
     private GameState EstadoAtual = GameState.TITULO;
-
-    // recursos gráficos
-    private BufferedImage TituloBG;
-    private BufferedImage credBG;
-    private BufferedImage personagemImagem;
-    private ImageIcon Gato;
-    private BufferedImage Grama;
-    private BufferedImage Arvore;
-
-    // icones dos creditos
-    private BufferedImage MatheusImagem;
-    private BufferedImage JoaoImagem;
-    private BufferedImage AugustoImagem;
-    private BufferedImage DiogoImagem;
-    private BufferedImage MariaImagem;
-
 
     private Font FonteCustomizada;
     private Font SegFonteCustomizada;
@@ -45,11 +29,11 @@ class GamePanel extends JPanel implements KeyListener {
         "Creditos"
     };
     private final String [] pessoas = {
-        "Matheus Belarmino (DexDousky)", 
-        "Joao Victor (Sr.DarkFrame)", 
-        "Augusto ( GUGU369a )", 
-        "Diogo Freitas (Siogodefreitassavastano)", 
-        "Maria (Vortex)"
+        "Matheus Belarmino: @DexDousky ", 
+        "João Victor: @Sr.DarkFrame ", 
+        "Augusto: @GUGU369a", 
+        "Diogo Freitas: @Diogodefreitassavastano", 
+        "Maria: @Vortex"
     };
 
     private int opcaoSelecionada = 0;
@@ -60,6 +44,9 @@ class GamePanel extends JPanel implements KeyListener {
     private final int VELOCIDADE = 6;
     private final boolean[] teclasPressionadas = new boolean[256];
     private Timer gameTimer;
+    private int HP = 5;
+    private int pontuacao = 0;
+    private int tempo = 0;
 
     public GamePanel() {
         this.gameTimer = null;
@@ -68,115 +55,54 @@ class GamePanel extends JPanel implements KeyListener {
         iniciarGameLoop();
     }
 
+    // fundos
+    private BufferedImage TituloBG;
+    private BufferedImage credBG;
+    private BufferedImage personagemImagem;
+    private ImageIcon Gato;
+    private BufferedImage Grama;
+    private BufferedImage Arvore;
+
+
+    // icones dos creditos
+    private BufferedImage MatheusImagem;
+    private BufferedImage JoaoImagem;
+    private BufferedImage AugustoImagem;
+    private BufferedImage DiogoImagem;
+    private BufferedImage MariaImagem;
+
     private void carregarRecursos() {
-    try {
-        // carregar o personagem
-        InputStream personagemStream = getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png");
-        if (personagemStream == null) {
-            System.err.println("ERRO: personagemprincipalplaceholder.png não encontrado em assets/!");
-        } else {
-            personagemImagem = ImageIO.read(personagemStream);
-        }
+        try {
+        personagemImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png"));
+        TituloBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
+        credBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/credfundo.png"));
 
-        // carregar a fonte customizada que criamos para o jogo e outra
+        // carregamento dos icones dos Devs
+        MatheusImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Matheus.png"));
+        JoaoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/João.png"));
+        AugustoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Augusto.png"));
+        DiogoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png"));
+        MariaImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png"));
+        Grama = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/grama.png"));
+        Gato = new ImageIcon(getClass().getClassLoader().getResource("assets/yippe.gif"));
+        
+        
+        // Carregar as fontes
+        
         InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/fontes/Uicool.ttf");
-        if (fonteStream == null) {
-            System.err.println("ERRO: Uicool.ttf não encontrado em assets/!");
-        } else {
-            FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(FonteCustomizada);
-        }
-
-        InputStream fonteStream2 = getClass().getClassLoader().getResourceAsStream("assets/fontes/pixel-latin.ttf");
-        if (fonteStream2 == null) {
-            System.err.println("ERRO: pixel-latin.ttf não encontrado em assets/!");
-        } else {
-            SegFonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream2).deriveFont(20f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(SegFonteCustomizada);
-        }
-
-        // carregar o background do titulo
-        InputStream tituloStream = getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png");
-        if (tituloStream == null) {
-            System.err.println("ERRO: TITULO_bg.png não encontrado em assets/!");
-            
-        } else {
-            TituloBG = ImageIO.read(tituloStream);
-        }
-
-        InputStream credStream = getClass().getClassLoader().getResourceAsStream("assets/credfundo.png");
-        if (credStream == null) {
-            System.err.println("ERRO: credfundo.png não encontrado em assets/!");
-        } else {
-            credBG = ImageIO.read(credStream);
-        }
-        // icones dos creditos
-
-        InputStream MatheusStream = getClass().getClassLoader().getResourceAsStream("assets/icones/Matheus.png");
-        if (MatheusStream == null) {
-            System.err.println("ERRO: Matheus.png não encontrado em assets/icones/!");
-            getClass().getClassLoader().getResourceAsStream("assets/icones/IconeDesconhecido.png");
-        } else {
-            MatheusImagem = ImageIO.read(MatheusStream);
-        }
+        FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
         
-        InputStream JoaoStream = getClass().getClassLoader().getResourceAsStream("assets/icones/João.png");
-        if (JoaoStream == null) {
-            System.err.println("ERRO: João.png não encontrado em assets/icones/!");
-        } else {
-            JoaoImagem = ImageIO.read(JoaoStream);
-        }
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.registerFont(FonteCustomizada);
 
-        InputStream AugustoStream = getClass().getClassLoader().getResourceAsStream("assets/icones/Augusto.png");
-        if (AugustoStream == null) {
-            System.err.println("ERRO: Augusto.png não encontrado em assets/icones/!");
-        } else {
-            AugustoImagem = ImageIO.read(AugustoStream);
-        }
+        InputStream fonteStream2 = getClass().getClassLoader().getResourceAsStream("assets/fontes/Jersey_15.ttf");
+        SegFonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream2).deriveFont(50f);
         
-        InputStream DiogoStream = getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png");
-        if (DiogoStream == null) {
-            System.err.println("ERRO: Diogo.png não encontrado em assets/icones/.png!");
-        } else {
-            DiogoImagem = ImageIO.read(DiogoStream);
-        }
-
-        InputStream MariaStream = getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png");
-        if (MariaStream == null) {
-            System.err.println("ERRO: Maria.png não encontrado em assets/icones/!");
-        } else {
-            MariaImagem = ImageIO.read(MariaStream);
-        }
-
-        //
-        if (MatheusImagem == null || JoaoImagem == null || AugustoImagem == null || DiogoImagem == null || MariaImagem == null) {
-            System.err.println("ERRO: Aconselho não selecionar os créditos, pois as imagens não foram carregadas corretamente.");
-            System.err.println("Atualize o caminho das imagens ou verifique se elas estão no diretório correto.");
-        } else {
-            // Aqui você pode adicionar o código para usar as imagens carregadas
-        }
-
-        // carregar a grama 
-        InputStream gramaStream = getClass().getClassLoader().getResourceAsStream("assets/grama.png");
-        if (gramaStream == null) {
-            System.err.println("ERRO: grama.png não encontrado em assets/!");
-        } else {
-            Grama = ImageIO.read(gramaStream);
-        }
-
-        // Carregar o fundo animado
-        java.net.URL Gatogif = getClass().getClassLoader().getResource("assets/yippe.gif");
-        if (Gatogif == null) {
-            System.err.println("ERRO: yippe.gif não encontrado em assets/!");
-        } else {
-            Gato = new ImageIcon(Gatogif);
-        }
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
     }
+    
 
     private void configurarPainel() {
         setBackground(Color.BLACK);
@@ -187,7 +113,7 @@ class GamePanel extends JPanel implements KeyListener {
     private void iniciarGameLoop() {
             
         
-        gameTimer = new Timer(16, e -> {
+        gameTimer = new Timer(16, _ -> {
             if (EstadoAtual == GameState.JOGANDO) {
                 atualizarPosicao();
             }
@@ -213,9 +139,52 @@ class GamePanel extends JPanel implements KeyListener {
             case JOGANDO:
                 desenharJogo(g);
                 break;
+            case EASTEREGG:
+                desenharEasterEgg(g);    
+            break;
+        }
+    }
+    // desenhos dos States
+
+    // tela de titulo
+    // aqui desenhamos a tela de titulo, com o fundo, o texto e as opcoes
+    private void desenharTelaTitulo(Graphics g) {
+        posX = 575;
+        posY = 600;
+        // fundo da tela de titulo
+        if (TituloBG != null) {
+            g.drawImage(TituloBG, 0, 0, getWidth(), getHeight(), this);
+        }
+
+        // título
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+
+        // opções
+        for (int i = 0; i < opcoes.length; i++) {
+            g.setColor(i == opcaoSelecionada ? Color.YELLOW : Color.WHITE);
+            desenharTextoCentralizado(g, opcoes[i], 560 + i * 60);
         }
     }
 
+    // easter egg
+    // aqui desenhamos o easter egg, com o fundo, o texto e as opcoes
+    private void desenharEasterEgg(Graphics g) {
+        // fundo da tela de titulo
+      
+        if (Gato != null) {
+            g.drawImage(Gato.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+          if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+        g.setColor(Color.WHITE);
+        desenharTextoCentralizado(g, "yIIppiii", 300);
+    }
+    
+    // tela de creditos
+    // ... preciso mesmo explicar?
     private void desenharCreditos(Graphics g) {
             
             if (credBG != null) {
@@ -225,7 +194,7 @@ class GamePanel extends JPanel implements KeyListener {
                 g.setFont(FonteCustomizada);
             }
 
-            // tipo de grafico (nova cor(Red: tanto faz, Green: tanto faz, Blue: tanto faz, Alpha: tanto faz))
+            // tipo de grafico (nova cor(Red: o tanto de vermelho, Green: o tanto de verde , Blue: o tanto de azul, Alpha: a opacidade "o quanto que vai tar visivel"))
             g.setColor(new Color(0, 0, 0, 200));
             g.fillRect(0, 0, getWidth(), getHeight());
             g.setColor(Color.WHITE);
@@ -243,11 +212,11 @@ class GamePanel extends JPanel implements KeyListener {
             
             // configs do dimensionamento dos icones de credito
 
-            int Largura = 200;                                      // Largura fixa
-            int Altura = (int) (342.0 / 477 * Largura);             // mesmo alterado, matem a proporção original 477x342
-            int EspacamentoVertical = 128;                          // espaço entre os ícones
-            int yBase = 30;                                        // posição Y inicial do ícone
-            int margemEsquerda = 50;                                // alto explicativo, "duh".
+            int Largura = 200;                                                                // Largura fixa
+            int Altura = (int) (342.0 / 477 * Largura);                                       // mesmo alterado, matem a proporção original 477x342
+            int EspacamentoVertical = 128;                                                    // espaço entre os ícones
+            int yBase = 30;                                                                   // posição Y inicial do ícone
+            int margemEsquerda = 20;                                                          // alto explicativo, "duh".
             
             
 
@@ -256,7 +225,7 @@ class GamePanel extends JPanel implements KeyListener {
                 g.setFont(SegFonteCustomizada);
             }
 
-            FontMetrics fm = g.getFontMetrics();                    // pega a medida da fonte escolhida acima
+            FontMetrics fm = g.getFontMetrics();                                            // pega a medida da fonte escolhida acima
             
             for (int i = 0; i < pessoas.length; i++) {
             
@@ -279,29 +248,11 @@ class GamePanel extends JPanel implements KeyListener {
         }
 
         // Mensagem de volta
-        g.drawString("Pressione ESPAÇO para voltar", 600, 690);
+        g.drawString("Pressione ESC para voltar", 600, 690);
     }
 
-    private void desenharTelaTitulo(Graphics g) {
-        posX = 575;
-        posY = 600;
-        // fundo da tela de titulo
-        if (TituloBG != null) {
-            g.drawImage(TituloBG, 0, 0, getWidth(), getHeight(), this);
-        }
-
-        // título
-        if (FonteCustomizada != null) {
-            g.setFont(FonteCustomizada);
-        }
-
-        // opções
-        for (int i = 0; i < opcoes.length; i++) {
-            g.setColor(i == opcaoSelecionada ? Color.YELLOW : Color.WHITE);
-            desenharTextoCentralizado(g, opcoes[i], 560 + i * 60);
-        }
-    }
-
+    
+    // tela de historia
     private void desenharTelaHistoria(Graphics g) {
         // sobreposição semi-transparente
         g.setColor(new Color(0, 0, 0, 200));
@@ -311,9 +262,10 @@ class GamePanel extends JPanel implements KeyListener {
         g.setColor(Color.WHITE);
 
         desenharTextoCentralizado(g, "Place holder da historia", 300);
-        desenharTextoCentralizado(g, "[Pressione ESPAÇO para voltar]", 600);
+        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
     }
 
+    // tela de jogo
     private void desenharJogo(Graphics g) {
         // gif placeholder de fundo
         if (Grama != null) {
@@ -358,12 +310,16 @@ class GamePanel extends JPanel implements KeyListener {
                     EstadoAtual = GameState.CREDITOS;
                     break;
             }
-        } else if (EstadoAtual == GameState.HISTORIA && tecla == KeyEvent.VK_SPACE) {
+        } else if (EstadoAtual == GameState.HISTORIA && tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
-        } else if (EstadoAtual == GameState.CREDITOS && tecla == KeyEvent.VK_SPACE) {
+        } else if (EstadoAtual == GameState.CREDITOS && tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
-        } else if (EstadoAtual == GameState.JOGANDO && tecla == KeyEvent.VK_SPACE) {
+        } else if (EstadoAtual == GameState.JOGANDO && tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
+        }  else if (EstadoAtual == GameState.EASTEREGG && tecla == KeyEvent.VK_ESCAPE) {
+            EstadoAtual = GameState.TITULO;
+        } else if (EstadoAtual == GameState.CREDITOS && tecla == KeyEvent.VK_Y) {
+            EstadoAtual = GameState.EASTEREGG;
         }
     }
 

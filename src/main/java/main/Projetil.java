@@ -1,3 +1,5 @@
+package main;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -21,7 +23,7 @@ class Projetil{
         y -= velprojetil;   // Move o projetil
     }
 
-    public void desenho(Graphics g){
+    public void desenharprojetil(Graphics g){
         g.setColor(Color.red);
         g.fillRect(x, y, largprojetil, altprojetil);
     
