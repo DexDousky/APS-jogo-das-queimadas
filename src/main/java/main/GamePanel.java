@@ -11,153 +11,179 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 
-//inacabado (POR ENQUANTO!! ESTAMOS CHEGANDO LA!!) 
-//Detalhe, agora está funcionando pra mim também! tá mostrando as Imagens em minha tela guys, GG, não tá dando mais o problema lá que deu, vamos terminar o game.
+// Oque falta?
+
+// Adicionar um botao de atirar: 
+// que faz o player atirar um jato de agua, que se em contato com o mesmo x e y de qualquer arvore, ela muda de sprite e adiciona 10 pontos ao player
+// (o jato sai do mesmo x e y do player, e vai para cima.)
+
+// Adicionar as arvores:
+// o comportamento das arvores é simples, aparecem pelo menos umas 3 na tela em alguns lugares aleatorios utilizando do sprite /assets/arvoreCarbonizada.png
+// comforme o player vai atirando jatos de agua na arvore, ela vai mudando de sprite, até chegar na arvora/Normal.png
+// depois disso, ela some da tela e o player ganha 100 pontos
+
+// Adicionar faiscas de fogo:
+// o comportamento das faiscas pode ser um pouco mais complicadinho mas, enfim, baiscamente elas saem de qualquer sprite de arvore que esteja queimada ( /assets/arvoreQueimando.png , /assets/arvoreMeioQueimada.png e /assets/arvoreCarbonizando.png)
+// se atingir o mesmo X e Y do player, o player perde 1 de HP mas, uns segundinhos que voces podem definir ai pra ter invencibilidade
+// Porque se atingir o msm X e Y do player, ele pode ficar diminuindo o HP infinitamente, oque faz o player fucking morrer
+
+// se voce apagar todas as arvores, va pra tela de vitoria
+
+//simples :D
+
+//qualquer asset q voces precisarem eu posso fazer, de qlqr forma eu vou estar trabalhando no State de Historia.
 
 class GamePanel extends JPanel implements KeyListener {
 
-    //  estados do jogo
-    //  aqui definimos os estados do jogo, que são: TITULO, JOGANDO, HISTORIA, CREDITOS e EASTEREGG
-    //  enum é uma classe especial que define um conjunto de constantes
-    //  entao usamos para facilitar a leitura e manutenção do código e não ter que ficar usando strings ou números
-    //  além do mais, jogos atuais usam States também, para definir os estados dos jogos
+    // todos os States do jogo são definidos aqui
 
     private enum GameState { 
         TITULO, 
         JOGANDO, 
         HISTORIA, 
         CREDITOS, 
-        EASTEREGG 
+        EASTEREGG,
+        GAMEOVER
     }
-    
-    // estado inicial do jogo
+
+    // estado atual do jogo
+
     private GameState EstadoAtual = GameState.TITULO;
+    
+    // fontes de texto 
 
     private Font FonteCustomizada;
     private Font SegFonteCustomizada;
     
-    // elementos da tela de título
+    // opções do menu
+
     private final String[] opcoes = {
         "Iniciar", 
         "Historia",
         "Creditos"
     };
-    private final String [] pessoas = {
-        "Matheus Belarmino: @DexDousky ", 
-        "João Victor: @Sr.DarkFrame ", 
+    
+    // pessoas que desenvolveram o jogo
+
+    private final String[] pessoas = {
+        "Matheus Belarmino: @DexDousky", 
+        "João Victor: @Sr.DarkFrame", 
         "Augusto: @GUGU369a", 
         "Diogo Freitas: @Diogodefreitassavastano", 
         "Maria: @Vortex"
     };
 
+    // variaveis dos controles do jogo
+
     private int opcaoSelecionada = 0;
-    
-    // elementos do jogo
     private int posX = 575;
     private int posY = 600;
     private final int VELOCIDADE = 9;
     private final boolean[] teclasPressionadas = new boolean[256];
     private Timer gameTimer;
     private int HP = 5;
+    private final int maxHP = 5;
     private int pontuacao = 0;
-    private int tempo = 0;
+    private int tempoRestante = 120;
+    private long ultimoTempoAtualizado = 0;
 
-    public GamePanel() { // publico pq aqui é o ponto de entrada do jogo, onde tudo começa
+    // assets do jogo.
+
+    private BufferedImage TituloBG, credBG, personagemImagem, Grama;
+    private ImageIcon Gato;
+    private BufferedImage MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem;
+    private BufferedImage tabua, coracao;
+
+    // construtor 
+    public GamePanel() {
         this.gameTimer = null;
-        carregarRecursos();
+        CarregamentosdeAssets();
         configurarPainel();
         iniciarGameLoop();
     }
 
-    // fundos
-    private BufferedImage TituloBG;
-    private BufferedImage credBG;
-    private BufferedImage personagemImagem;
-    private ImageIcon Gato;
-    private BufferedImage Grama;
-    private BufferedImage Arvore;
-
-
-    // icones dos creditos
-    private BufferedImage MatheusImagem;
-    private BufferedImage JoaoImagem;
-    private BufferedImage AugustoImagem;
-    private BufferedImage DiogoImagem;
-    private BufferedImage MariaImagem;
-
-    // coisas
-    private BufferedImage tabua;
-    private BufferedImage coracao;
-
-
-    private void carregarRecursos() {
+    // aqui todos os recursos do jogo são carregados, como imagens, fontes e etc
+    private void CarregamentosdeAssets() {
         try {
 
-        //  hud
-        tabua = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Tabua.png"));
-        coracao = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Coracao.png"));
+            // hud
+            tabua = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Tabua.png"));
+            coracao = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Coracao.png"));
 
-        //  coisas do state "jogando"
-        personagemImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png"));
-        
+            // assets do jogo
+            personagemImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png"));
+            TituloBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
+            credBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/credfundo.png"));
+            Gato = new ImageIcon(getClass().getClassLoader().getResource("assets/yippe.gif"));
+            Grama = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/grama.png"));
+            
+            // icones de dev
+            MatheusImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Matheus.png"));
+            JoaoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/João.png"));
+            AugustoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Augusto.png"));
+            DiogoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png"));
+            MariaImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png"));
+            
+            // fontes
+            InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/fontes/Uicool.ttf");
+            FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(FonteCustomizada);
 
-        //  fundos
-        TituloBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
-        credBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/credfundo.png"));
-        Gato = new ImageIcon(getClass().getClassLoader().getResource("assets/yippe.gif"));
-        
-
-        //  carregamento dos icones dos Devs
-        MatheusImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Matheus.png"));
-        JoaoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/João.png"));
-        AugustoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Augusto.png"));
-        DiogoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png"));
-        MariaImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png"));
-        Grama = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/grama.png"));
-        
-        
-        //  carregar as fontes
-        
-        InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/fontes/Uicool.ttf");
-        FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
-        
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(FonteCustomizada);
-
-        InputStream fonteStream2 = getClass().getClassLoader().getResourceAsStream("assets/fontes/Jersey_15.ttf");
-        SegFonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream2).deriveFont(50f);
-        
+            InputStream fonteStream2 = getClass().getClassLoader().getResourceAsStream("assets/fontes/Jersey_15.ttf");
+            SegFonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream2).deriveFont(50f);
+            
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
     }
-    
+
 
     private void configurarPainel() {
         setBackground(Color.BLACK);
-        setFocusable(true);
         addKeyListener(this);
+        setFocusable(true);
     }
 
+    // iniciar o game loop, que vai ser o responsavel por atualizar o jogo
     private void iniciarGameLoop() {
-            
-        
         gameTimer = new Timer(16, _ -> {
             if (EstadoAtual == GameState.JOGANDO) {
                 atualizarPosicao();
+                atualizarTempo();
             }
             repaint();
         });
         gameTimer.start();
     }
 
+    // aqui a gente vai atualizar o tempo do jogo, e verificar se o tempo acabou
+    // se o tempo acabar, o jogo vai pra tela de game over e o tempo vai ser zerado
+    // e tambem é logico.
+    private void atualizarTempo() {
+        long agora = System.currentTimeMillis();
+        if (ultimoTempoAtualizado == 0) ultimoTempoAtualizado = agora;
+        
+        long decorrido = agora - ultimoTempoAtualizado;
+        if (decorrido >= 1000) {
+            tempoRestante--;
+            ultimoTempoAtualizado = agora;
+            
+            if (tempoRestante <= 0) {
+                EstadoAtual = GameState.GAMEOVER;
+                tempoRestante = 0;
+            }
+        }
+    }
+
+    // aqui a gente vai desenhar tudo que precisa ser desenhado na tela
+    // dependendo do estado atual do jogo
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -176,204 +202,212 @@ class GamePanel extends JPanel implements KeyListener {
                 desenharJogo(g);
                 break;
             case EASTEREGG:
-                desenharEasterEgg(g);    
-            break;
+                desenharEasterEgg(g);
+                break;
+            case GAMEOVER:
+                desenharGameOver(g);
+                break;
         }
     }
 
-/// desenhos dos States
+    private void desenharJogo(Graphics g) {
+        //desenhar o BG (Background)
+        if (Grama != null) {
+            g.drawImage(Grama, 0, 0, getWidth(), getHeight(), this);
+        }
 
-    // tela de titulo
-    // aqui desenhamos a tela de titulo, com o fundo, o texto e as opcoes
-    private void desenharTelaTitulo(Graphics g) {
-        posX = 575;
-        posY = 600;
-        HP = 5;
+        // o personagem principal
+        if (personagemImagem != null) {
+            g.drawImage(personagemImagem, posX, posY, 100, 100, this);
+        }
+
+        // a hud
+        g.drawImage(tabua, 0, 0, getWidth(), 78, this);
         
-        // fundo da tela de titulo
+        // definir a cor e a fonte a serem utilizadas aqui nesse estado
+        g.setColor(Color.WHITE);
+        g.setFont(SegFonteCustomizada.deriveFont(50f));
+
+        // desenhar a pontuação e o tempo na hud
+        g.drawString("Pontos: " + pontuacao, 680, 53);
+        String tempoFormatado = String.format("%02d:%02d", tempoRestante/60, tempoRestante%60);
+        g.drawString("Tempo: " + tempoFormatado, 940, 53);
+
+        // desenhar a vida do jogador com base no HP
+        for (int i = 0; i < HP; i++) {
+            g.drawImage(coracao, 70 + (i * 65), 15, 50, 50, this);
+        }
+    }
+
+    // aqui é para a tela de titulo
+    private void desenharTelaTitulo(Graphics g) {
         if (TituloBG != null) {
             g.drawImage(TituloBG, 0, 0, getWidth(), getHeight(), this);
         }
 
-        // título
         if (FonteCustomizada != null) {
             g.setFont(FonteCustomizada);
         }
 
-        // opções
         for (int i = 0; i < opcoes.length; i++) {
             g.setColor(i == opcaoSelecionada ? Color.YELLOW : Color.WHITE);
             desenharTextoCentralizado(g, opcoes[i], 560 + i * 60);
         }
     }
 
-    // easter egg
-    // aqui desenhamos o easter egg, com o fundo, o texto e as opcoes
+    // tela de game over
+    private void desenharGameOver(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        
+        g.setColor(Color.WHITE);
+        
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+        desenharTextoCentralizado(g, "Game Over", 300);
+        if (SegFonteCustomizada != null) {
+            g.setFont(SegFonteCustomizada);
+        }
+        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
+    }
+
+    // o easter egg
     private void desenharEasterEgg(Graphics g) {
-        // fundo da tela de titulo
-      
         if (Gato != null) {
             g.drawImage(Gato.getImage(), 0, 0, getWidth(), getHeight(), this);
         }
-          if (FonteCustomizada != null) {
+        if (FonteCustomizada != null) {
             g.setFont(FonteCustomizada);
         }
         g.setColor(Color.WHITE);
         desenharTextoCentralizado(g, "yIIppiii", 300);
     }
-    
-    // tela de creditos
-    // ... preciso mesmo explicar?
+
+    // creditos
     private void desenharCreditos(Graphics g) {
-            
-            if (credBG != null) {
-                g.drawImage(credBG, 0, 0, getWidth(), getHeight(), this);
-            }
-            if (FonteCustomizada != null) {
-                g.setFont(FonteCustomizada);
-            }
-
-            // tipo de grafico (nova cor(Red: o tanto de vermelho, Green: o tanto de verde , Blue: o tanto de azul, Alpha: a opacidade "o quanto que vai tar visivel"))
-            g.setColor(new Color(0, 0, 0, 200));
-            g.fillRect(0, 0, getWidth(), getHeight());
-            g.setColor(Color.WHITE);
-            desenharTextoCentralizado(g, "Creditos", 40);
-
-            // exibe cada pessoa e seu ícone
+        if (credBG != null) {
+            g.drawImage(credBG, 0, 0, getWidth(), getHeight(), this);
+        }
         
-            BufferedImage[] imgs = new BufferedImage[] {
-                MatheusImagem, 
-                JoaoImagem, 
-                AugustoImagem, 
-                DiogoImagem, 
-                MariaImagem
-            };
-            
-            // configs do dimensionamento dos icones de credito
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.WHITE);
+        
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+            desenharTextoCentralizado(g, "Creditos", 40);
+        }
 
-            int Largura = 200;                                                                // Largura fixa
-            int Altura = (int) (342.0 / 477 * Largura);                                       // mesmo alterado, matem a proporção original 477x342
-            int EspacamentoVertical = 128;                                                    // espaço entre os ícones
-            int yBase = 30;                                                                   // posição Y inicial do ícone
-            int margemEsquerda = 20;                                                          // alto explicativo, "duh".
-            
-            
+        BufferedImage[] imgs = {MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem};
+        
+        if (SegFonteCustomizada != null) {
+            g.setFont(SegFonteCustomizada);
+        }
 
-            // exibe cada pessoa e seu ícone
-            if (SegFonteCustomizada != null) {
-                g.setFont(SegFonteCustomizada);
-            }
-
-            FontMetrics fm = g.getFontMetrics();                                                // pega a medida da fonte escolhida acima
-            
-            for (int i = 0; i < pessoas.length; i++) {
-            
-            // Posição do ícone
+        int Largura = 200;
+        int Altura = (int)(342.0 / 477 * Largura);
+        int EspacamentoVertical = 128;
+        int yBase = 30;
+        int margemEsquerda = 20;
+        
+        FontMetrics fm = g.getFontMetrics(); // pega a fonte e suas medidas e calcular o tamanho dela pra poder desenhar o texto na tela
+        
+        for (int i = 0; i < pessoas.length; i++) {
             int xIcone = margemEsquerda;
             int yIcone = yBase + (i * EspacamentoVertical);
             
-            // Desenha o ícone redimensionado proporcionalmente
             if (imgs[i] != null) {
                 g.drawImage(imgs[i], xIcone, yIcone, Largura, Altura, this);
             }
             
-            // Calcula posição Y do texto (centralizado verticalmente com o ícone)
             int yTexto = yIcone + (Altura - fm.getHeight()) / 2 + fm.getAscent();
-            
-            // Posição X do texto (ícone + margem)
             int xTexto = xIcone + Largura + 20;
-            
             g.drawString(pessoas[i], xTexto, yTexto);
         }
 
-        // Mensagem de volta
         g.drawString("Pressione ESC para voltar", 600, 690);
     }
 
-    
-    // tela de historia
+    // e a tela de historia
     private void desenharTelaHistoria(Graphics g) {
-        // sobreposição semi-transparente
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0, getWidth(), getHeight());
-        
-        // texto
         g.setColor(Color.WHITE);
         
         if (SegFonteCustomizada != null) {
-                g.setFont(SegFonteCustomizada);
-            }
-
+            g.setFont(SegFonteCustomizada);
+        }
         desenharTextoCentralizado(g, "Place holder da historia", 300);
         desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
     }
 
-    // tela de jogo
-    private void desenharJogo(Graphics g) {
-    int maxHP = 5;
-    
-    if (Grama != null) {
-        g.drawImage(Grama, 0, 0, getWidth(), getHeight(), this);
-    }
-    if (personagemImagem != null) {
-        g.drawImage(personagemImagem, posX, posY, 100, 100, this);
-    }
-    
-    g.drawImage(tabua, 0, 0, getWidth(), 78, this); // Largura ajustada para 300 (exemplo)
-    
-    
-    for (int i = 0; i < Math.min(HP, maxHP); i++) {
-        g.drawImage(coracao, 70 + (i * 65), 15, 50, 50, this);
-    }
-}
-
+    // funcao feita pra desenhar o texto centralizado na tela
+    // ela calcula a largura do texto e o posiciona no meio da tela
     private void desenharTextoCentralizado(Graphics g, String texto, int y) {
         FontMetrics fm = g.getFontMetrics();
         int x = (getWidth() - fm.stringWidth(texto)) / 2;
         g.drawString(texto, x, y);
     }
 
+    // basicamente um ouvintes pro teclado em seus diferentes estados
+    // aqui a gente vai definir o que acontece quando o jogador pressiona uma tecla
+    // e o que acontece quando ele solta a tecla
     @Override
     public void keyPressed(KeyEvent e) {
         int tecla = e.getKeyCode();
         teclasPressionadas[tecla] = true;
 
-        if (EstadoAtual == GameState.TITULO) {
-            switch (tecla) {
-                case KeyEvent.VK_W:
-                    opcaoSelecionada = Math.max(0, opcaoSelecionada - 1);
-                    break;
-                case KeyEvent.VK_UP :
-                    opcaoSelecionada = Math.max(0, opcaoSelecionada - 1);
-                    break;
-                case KeyEvent.VK_S:
-                    opcaoSelecionada = Math.min(opcoes.length - 1, opcaoSelecionada + 1);
-                    break;
-                case KeyEvent.VK_DOWN:
-                    opcaoSelecionada = Math.min(opcoes.length - 1, opcaoSelecionada + 1);
-                    break;
-                case KeyEvent.VK_ENTER:
-                    executarOpcao();
-                    break;
-                case KeyEvent.VK_G:
-                    EstadoAtual = GameState.CREDITOS;
-                    break;
-            }
-        } else if (EstadoAtual == GameState.HISTORIA && tecla == KeyEvent.VK_ESCAPE) {
-            EstadoAtual = GameState.TITULO;
-        } else if (EstadoAtual == GameState.CREDITOS && tecla == KeyEvent.VK_ESCAPE) {
-            EstadoAtual = GameState.TITULO;
-        } else if (EstadoAtual == GameState.JOGANDO && tecla == KeyEvent.VK_ESCAPE) {
-            EstadoAtual = GameState.TITULO;
-        }  else if (EstadoAtual == GameState.EASTEREGG && tecla == KeyEvent.VK_ESCAPE) {
-            EstadoAtual = GameState.TITULO;
-        } else if (EstadoAtual == GameState.CREDITOS && tecla == KeyEvent.VK_Y) {
+        switch (EstadoAtual) {
+            case TITULO:
+                InputdoTitulo(tecla);
+                break;
+            case JOGANDO:
+                InputdoJogo(tecla);
+                break;
+            default: // isso daqui simplifica pra toda vez que a tecla ESC for pressionada, o jogo volta pro menu principal, evitando aquele monte de elseif que ngm aguenta :sob:
+                if (tecla == KeyEvent.VK_ESCAPE) {
+                    EstadoAtual = GameState.TITULO;
+                }
+                break;
+        }
+        
+        // condições pro easter egg abrir
+        if (EstadoAtual == GameState.CREDITOS && tecla == KeyEvent.VK_Y) {
             EstadoAtual = GameState.EASTEREGG;
-        } else if (EstadoAtual == GameState.JOGANDO && tecla == KeyEvent.VK_D) {
-            HP = (HP - 1);
+        }
+        
+        // tecla de testes ( plmrds lembra de remover isso depois que a gente acabar o jogo por tudo que ha de mais sagrado)
+        if (EstadoAtual == GameState.JOGANDO && tecla == KeyEvent.VK_D) {
+            HP--; // literalmente o i++ só q negativo E usando o HP
             if (HP <= 0) {
-                EstadoAtual = GameState.TITULO;
+                EstadoAtual = GameState.GAMEOVER;
             }
+        }
+    }
+    // mesma coisa de cima mas pro titulo
+    private void InputdoTitulo(int tecla) {
+        switch (tecla) {
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_UP:
+                opcaoSelecionada = Math.max(0, opcaoSelecionada - 1);
+                break;
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
+                opcaoSelecionada = Math.min(opcoes.length - 1, opcaoSelecionada + 1);
+                break;
+            case KeyEvent.VK_ENTER:
+                executarOpcao();
+                break;
+            case KeyEvent.VK_G:
+                EstadoAtual = GameState.CREDITOS;
+                break;
+        }
+    }
+
+    private void InputdoJogo(int tecla) {
+        if (tecla == KeyEvent.VK_ESCAPE) {
+            EstadoAtual = GameState.TITULO;
         }
     }
 
@@ -381,6 +415,7 @@ class GamePanel extends JPanel implements KeyListener {
         switch (opcaoSelecionada) {
             case 0: // iniciar
                 EstadoAtual = GameState.JOGANDO;
+                ResetarPontuacoes();
                 break;
             case 1: // história
                 EstadoAtual = GameState.HISTORIA;
@@ -391,15 +426,26 @@ class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+    private void ResetarPontuacoes() {
+        HP = maxHP;
+        pontuacao = 0;
+        tempoRestante = 60;
+        ultimoTempoAtualizado = 0;
+        posX = 575;
+        posY = 600;
+    }
+
     private void atualizarPosicao() {
+        
+        // Limites da tela aplicados no personagem
+        posX = Math.max(0, Math.min(posX, getWidth() - 100));
+        posY = Math.max(0, Math.min(posY, getHeight() - 100));
+
         if (teclasPressionadas[KeyEvent.VK_UP]) posY -= VELOCIDADE;
         if (teclasPressionadas[KeyEvent.VK_DOWN]) posY += VELOCIDADE;
         if (teclasPressionadas[KeyEvent.VK_LEFT]) posX -= VELOCIDADE;
         if (teclasPressionadas[KeyEvent.VK_RIGHT]) posX += VELOCIDADE;
 
-        // limites da tela
-        posX = Math.max(0, Math.min(posX, getWidth() - 100));
-        posY = Math.max(0, Math.min(posY, getHeight() - 100));
     }
 
     @Override
@@ -410,10 +456,3 @@ class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {}
 }
-
-
-//porque que java e haxe sao tao estranhos em questao de condicionais e algumas coisas?
-//eu tenho que colocar chaves e dps deixar um else em cima das chaves do if???
-//sei que provavelmente o senhor nao sabe exatamente o porque disso, ate porque todas as linguagens tem suas particularidades, mas .... nossa
-//e sim eu to aprendendo a programar em haxe
-//-- Matheus Belarmino
