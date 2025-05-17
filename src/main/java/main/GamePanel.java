@@ -1,21 +1,42 @@
 package main;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 
 //inacabado (POR ENQUANTO!! ESTAMOS CHEGANDO LA!!) 
 //Detalhe, agora está funcionando pra mim também! tá mostrando as Imagens em minha tela guys, GG, não tá dando mais o problema lá que deu, vamos terminar o game.
 
 class GamePanel extends JPanel implements KeyListener {
-    // estados do jogo
-    //utilizameos private enum para evitar que o usuario
-    private enum GameState { TITULO, JOGANDO, HISTORIA, CREDITOS, EASTEREGG }
+
+    //  estados do jogo
+    //  aqui definimos os estados do jogo, que são: TITULO, JOGANDO, HISTORIA, CREDITOS e EASTEREGG
+    //  enum é uma classe especial que define um conjunto de constantes
+    //  entao usamos para facilitar a leitura e manutenção do código e não ter que ficar usando strings ou números
+    //  além do mais, jogos atuais usam States também, para definir os estados dos jogos
+
+    private enum GameState { 
+        TITULO, 
+        JOGANDO, 
+        HISTORIA, 
+        CREDITOS, 
+        EASTEREGG 
+    }
+    
     // estado inicial do jogo
     private GameState EstadoAtual = GameState.TITULO;
 
@@ -48,7 +69,7 @@ class GamePanel extends JPanel implements KeyListener {
     private int pontuacao = 0;
     private int tempo = 0;
 
-    public GamePanel() {
+    public GamePanel() { // publico pq aqui é o ponto de entrada do jogo, onde tudo começa
         this.gameTimer = null;
         carregarRecursos();
         configurarPainel();
@@ -71,23 +92,38 @@ class GamePanel extends JPanel implements KeyListener {
     private BufferedImage DiogoImagem;
     private BufferedImage MariaImagem;
 
+    // coisas
+    private BufferedImage tabua;
+    private BufferedImage coracao;
+
+
     private void carregarRecursos() {
         try {
+
+        //  hud
+        tabua = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Tabua.png"));
+        coracao = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Coracao.png"));
+
+        //  coisas do state "jogando"
         personagemImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png"));
+        
+
+        //  fundos
         TituloBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
         credBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/credfundo.png"));
+        Gato = new ImageIcon(getClass().getClassLoader().getResource("assets/yippe.gif"));
+        
 
-        // carregamento dos icones dos Devs
+        //  carregamento dos icones dos Devs
         MatheusImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Matheus.png"));
         JoaoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/João.png"));
         AugustoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Augusto.png"));
         DiogoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png"));
         MariaImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png"));
         Grama = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/grama.png"));
-        Gato = new ImageIcon(getClass().getClassLoader().getResource("assets/yippe.gif"));
         
         
-        // Carregar as fontes
+        //  carregar as fontes
         
         InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/fontes/Uicool.ttf");
         FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
@@ -144,13 +180,16 @@ class GamePanel extends JPanel implements KeyListener {
             break;
         }
     }
-    // desenhos dos States
+
+/// desenhos dos States
 
     // tela de titulo
     // aqui desenhamos a tela de titulo, com o fundo, o texto e as opcoes
     private void desenharTelaTitulo(Graphics g) {
         posX = 575;
         posY = 600;
+        HP = 5;
+        
         // fundo da tela de titulo
         if (TituloBG != null) {
             g.drawImage(TituloBG, 0, 0, getWidth(), getHeight(), this);
@@ -271,16 +310,22 @@ class GamePanel extends JPanel implements KeyListener {
 
     // tela de jogo
     private void desenharJogo(Graphics g) {
-        // gif placeholder de fundo
-        if (Grama != null) {
-            g.drawImage(Grama, 0, 0, getWidth(), getHeight(), this);
-        }
-        
-        // jogador/player
-        if (personagemImagem != null) {
-            g.drawImage(personagemImagem, posX, posY, 100, 100, this);
-        }
+    int maxHP = 5;
+    
+    if (Grama != null) {
+        g.drawImage(Grama, 0, 0, getWidth(), getHeight(), this);
     }
+    if (personagemImagem != null) {
+        g.drawImage(personagemImagem, posX, posY, 100, 100, this);
+    }
+    
+    g.drawImage(tabua, 0, 0, getWidth(), 78, this); // Largura ajustada para 300 (exemplo)
+    
+    
+    for (int i = 0; i < Math.min(HP, maxHP); i++) {
+        g.drawImage(coracao, 70 + (i * 65), 15, 50, 50, this);
+    }
+}
 
     private void desenharTextoCentralizado(Graphics g, String texto, int y) {
         FontMetrics fm = g.getFontMetrics();
@@ -324,6 +369,11 @@ class GamePanel extends JPanel implements KeyListener {
             EstadoAtual = GameState.TITULO;
         } else if (EstadoAtual == GameState.CREDITOS && tecla == KeyEvent.VK_Y) {
             EstadoAtual = GameState.EASTEREGG;
+        } else if (EstadoAtual == GameState.JOGANDO && tecla == KeyEvent.VK_D) {
+            HP = (HP - 1);
+            if (HP <= 0) {
+                EstadoAtual = GameState.TITULO;
+            }
         }
     }
 
