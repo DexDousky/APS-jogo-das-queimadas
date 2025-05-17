@@ -41,7 +41,7 @@ class GamePanel extends JPanel implements KeyListener {
     // elementos do jogo
     private int posX = 575;
     private int posY = 600;
-    private final int VELOCIDADE = 6;
+    private final int VELOCIDADE = 9;
     private final boolean[] teclasPressionadas = new boolean[256];
     private Timer gameTimer;
     private int HP = 5;
@@ -225,7 +225,7 @@ class GamePanel extends JPanel implements KeyListener {
                 g.setFont(SegFonteCustomizada);
             }
 
-            FontMetrics fm = g.getFontMetrics();                                            // pega a medida da fonte escolhida acima
+            FontMetrics fm = g.getFontMetrics();                                                // pega a medida da fonte escolhida acima
             
             for (int i = 0; i < pessoas.length; i++) {
             
@@ -260,6 +260,10 @@ class GamePanel extends JPanel implements KeyListener {
         
         // texto
         g.setColor(Color.WHITE);
+        
+        if (SegFonteCustomizada != null) {
+                g.setFont(SegFonteCustomizada);
+            }
 
         desenharTextoCentralizado(g, "Place holder da historia", 300);
         desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
