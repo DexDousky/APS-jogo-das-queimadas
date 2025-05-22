@@ -98,6 +98,7 @@ class GamePanel extends JPanel implements KeyListener {
     private BufferedImage TituloBG, credBG, personagemImagem, Grama;
     private ImageIcon Gato;
     private BufferedImage MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem;
+    private BufferedImage pagina1, pagina2, pagina3, pagina4, pagina5, pagina6, pagina7, hfundo, moldura, bagulho;
     private BufferedImage tabua, coracao;
 
     // construtor 
@@ -130,6 +131,17 @@ class GamePanel extends JPanel implements KeyListener {
             DiogoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png"));
             MariaImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png"));
             
+
+            //assets o menu e hitori
+            pagina1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina1.png"));
+            pagina2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina2.png"));
+            pagina3 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina3.png"));
+            pagina4 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina4.png"));
+            pagina5 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina5.png"));
+            pagina6 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina6.png"));
+            pagina7 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina7.png"));
+
+
             // fontes
             InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/fontes/Uicool.ttf");
             FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
