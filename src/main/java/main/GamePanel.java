@@ -92,7 +92,7 @@ class GamePanel extends JPanel implements KeyListener {
     private int pontuacao = 0;
     private int tempoRestante = 120;
     private long ultimoTempoAtualizado = 0;
-    private int numpg = 0;
+    private int numpg = 1;
 
     // assets do jogo.
     private BufferedImage TituloBG, CredBG, HistoriaBG;
@@ -200,7 +200,7 @@ class GamePanel extends JPanel implements KeyListener {
     // aqui a gente vai atualizar o tempo do jogo, e verificar se o tempo acabou
     // se o tempo acabar, o jogo vai pra tela de game over e o tempo vai ser zerado
     // e tambem é logico.
-    
+
     private void atualizarTempo() {
         long agora = System.currentTimeMillis();
         if (ultimoTempoAtualizado == 0) ultimoTempoAtualizado = agora;
@@ -361,7 +361,7 @@ class GamePanel extends JPanel implements KeyListener {
             g.drawString(pessoas[i], xTexto, yTexto);
         }
 
-        g.drawString("Pressione ESC para voltar", 600, 690);
+        g.drawString("Pressione ESC para voltar", 740, 690);
     }
 
     // e a tela de historia
@@ -371,23 +371,35 @@ class GamePanel extends JPanel implements KeyListener {
         g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
         g.drawImage(bagulho, 369, 550, 500, 100, this);
         BufferedImage[] paginas = {pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete};
-
+       
         
 
         // Desenha página primeiro
         if (numpg >= 1 && numpg <= paginas.length) {
-            g.drawImage(paginas[numpg - 1], 374, 70, 510, 361, this);
+            g.drawImage(paginas[numpg - 1], 380, 95, 490, 341, this);
         }
         
         // Depois desenha moldura por cima
-        g.drawImage(moldura, 365, 70, 533, 384, this); 
-        
+        g.drawImage(moldura, 365, 80, 543, 394, this); 
+
         // Texto
         g.setColor(Color.WHITE);
         if (SegFonteCustomizada != null) {
             g.setFont(SegFonteCustomizada);
         }
+        
         desenharTextoCentralizado(g, "Página: " + numpg, 610);
+
+        g.setColor(Color.WHITE);
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+        
+
+        desenharTextoCentralizado(g, "HISTORIA", 70);        
+        g.setColor(Color.WHITE);
+        g.setFont(SegFonteCustomizada.deriveFont(30f));        
+        g.drawString("Pressione ESQUERDA ou DIREITA para mudar as páginas e ESC para voltar", 230, 690);
     }
 
     // funcao feita pra desenhar o texto centralizado na tela
@@ -410,8 +422,9 @@ class GamePanel extends JPanel implements KeyListener {
         switch (EstadoAtual) {
             case TITULO:
                 InputdoTitulo(tecla);
+                numpg = 1;
                 break;
-            case HISTORIA: // CASO ADICIONADO
+            case HISTORIA: 
                 InputdoHistoria(tecla);
                 break;
             case JOGANDO:
@@ -458,13 +471,16 @@ class GamePanel extends JPanel implements KeyListener {
     }
     
     private void InputdoHistoria(int tecla) {
-        if (tecla == KeyEvent.VK_RIGHT || tecla == KeyEvent.VK_DOWN) {
+        if (tecla == KeyEvent.VK_RIGHT || tecla == KeyEvent.VK_D) {
             numpg++;
-        } else if (tecla == KeyEvent.VK_LEFT || tecla == KeyEvent.VK_UP) {
+        } else if (tecla == KeyEvent.VK_LEFT || tecla == KeyEvent.VK_A) {
             numpg--;
         }
         // Garante que numpg fique entre 1 e 7
         numpg = Math.max(1, Math.min(numpg, 7));
+        if (tecla == KeyEvent.VK_ESCAPE) {
+            EstadoAtual = GameState.TITULO;
+        }
     }
 
     private void InputdoJogo(int tecla) {
@@ -477,7 +493,6 @@ class GamePanel extends JPanel implements KeyListener {
         switch (opcaoSelecionada) {
             case 0: // iniciar
                 EstadoAtual = GameState.JOGANDO;
-                numpg = 1; // Reinicia na página 1
                 ResetarPontuacoes();
                 break;
             case 1: // história
