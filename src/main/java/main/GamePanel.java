@@ -92,15 +92,19 @@ class GamePanel extends JPanel implements KeyListener {
     private int pontuacao = 0;
     private int tempoRestante = 120;
     private long ultimoTempoAtualizado = 0;
+    private int numpg = 0;
 
     // assets do jogo.
-
-    private BufferedImage TituloBG, credBG, personagemImagem, Grama;
+    private BufferedImage TituloBG, CredBG, HistoriaBG;
+    private BufferedImage personagemImagem, Grama;
     private ImageIcon Gato;
     private BufferedImage MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem;
-    private BufferedImage pagina1, pagina2, pagina3, pagina4, pagina5, pagina6, pagina7, hfundo, moldura, bagulho;
-    private BufferedImage tabua, coracao;
+    private BufferedImage tabua, coracao, moldura, bagulho;
+    private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete;
 
+    // assets de arvore
+    private BufferedImage arvoren, arvoremq, arvoreq, arvorec;
+    
     // construtor 
     public GamePanel() {
         this.gameTimer = null;
@@ -114,35 +118,52 @@ class GamePanel extends JPanel implements KeyListener {
         try {
 
             // hud
+
             tabua = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Tabua.png"));
             coracao = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Coracao.png"));
+            moldura = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/moldura.png"));
+            bagulho = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/bagulho.png"));
 
-            // assets do jogo
-            personagemImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png"));
+
+            // BGs
+            
             TituloBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
-            credBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/credfundo.png"));
+            CredBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/credfundo.png"));
+            HistoriaBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/background.png"));
+            
+            // assets do jogo
+
+            personagemImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/personagemprincipalplaceholder.png"));
             Gato = new ImageIcon(getClass().getClassLoader().getResource("assets/yippe.gif"));
             Grama = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/grama.png"));
             
             // icones de dev
+
             MatheusImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Matheus.png"));
             JoaoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/João.png"));
             AugustoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Augusto.png"));
             DiogoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png"));
             MariaImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png"));
+                     
+            // paginas
+
+            pgum = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgum.png"));
+            pgdois = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgdois.png"));
+            pgtres = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgtres.png"));
+            pgquatro = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgquatro.png"));
+            pgcinco = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgcinco.png"));
+            pgseis = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgseis.png"));
+            pgsete = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgsete.png"));
             
+            // assets de arvore
 
-            //assets o menu e hitori
-            pagina1 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina1.png"));
-            pagina2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina2.png"));
-            pagina3 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina3.png"));
-            pagina4 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina4.png"));
-            pagina5 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina5.png"));
-            pagina6 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina6.png"));
-            pagina7 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pagina7.png"));
-
-
+            arvoren = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreNormal.png"));
+            arvoremq = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreMeioQueimada.png"));
+            arvoreq = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreQueimando.png"));
+            arvorec = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreCarbonizando.png"));
+            
             // fontes
+            
             InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/fontes/Uicool.ttf");
             FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -157,6 +178,7 @@ class GamePanel extends JPanel implements KeyListener {
     }
 
 
+    // aqui a gente vai configurar o painel, como a cor de fundo e o keylistener
     private void configurarPainel() {
         setBackground(Color.BLACK);
         addKeyListener(this);
@@ -178,6 +200,7 @@ class GamePanel extends JPanel implements KeyListener {
     // aqui a gente vai atualizar o tempo do jogo, e verificar se o tempo acabou
     // se o tempo acabar, o jogo vai pra tela de game over e o tempo vai ser zerado
     // e tambem é logico.
+    
     private void atualizarTempo() {
         long agora = System.currentTimeMillis();
         if (ultimoTempoAtualizado == 0) ultimoTempoAtualizado = agora;
@@ -298,8 +321,8 @@ class GamePanel extends JPanel implements KeyListener {
 
     // creditos
     private void desenharCreditos(Graphics g) {
-        if (credBG != null) {
-            g.drawImage(credBG, 0, 0, getWidth(), getHeight(), this);
+        if (CredBG != null) {
+            g.drawImage(CredBG, 0, 0, getWidth(), getHeight(), this);
         }
         
         g.setColor(new Color(0, 0, 0, 200));
@@ -343,19 +366,33 @@ class GamePanel extends JPanel implements KeyListener {
 
     // e a tela de historia
     private void desenharTelaHistoria(Graphics g) {
-        g.setColor(new Color(0, 0, 0, 200));
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.WHITE);
         
+
+        g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
+        g.drawImage(bagulho, 369, 550, 500, 100, this);
+        BufferedImage[] paginas = {pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete};
+
+        
+
+        // Desenha página primeiro
+        if (numpg >= 1 && numpg <= paginas.length) {
+            g.drawImage(paginas[numpg - 1], 374, 70, 510, 361, this);
+        }
+        
+        // Depois desenha moldura por cima
+        g.drawImage(moldura, 365, 70, 533, 384, this); 
+        
+        // Texto
+        g.setColor(Color.WHITE);
         if (SegFonteCustomizada != null) {
             g.setFont(SegFonteCustomizada);
         }
-        desenharTextoCentralizado(g, "Place holder da historia", 300);
-        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
+        desenharTextoCentralizado(g, "Página: " + numpg, 610);
     }
 
     // funcao feita pra desenhar o texto centralizado na tela
     // ela calcula a largura do texto e o posiciona no meio da tela
+
     private void desenharTextoCentralizado(Graphics g, String texto, int y) {
         FontMetrics fm = g.getFontMetrics();
         int x = (getWidth() - fm.stringWidth(texto)) / 2;
@@ -374,10 +411,13 @@ class GamePanel extends JPanel implements KeyListener {
             case TITULO:
                 InputdoTitulo(tecla);
                 break;
+            case HISTORIA: // CASO ADICIONADO
+                InputdoHistoria(tecla);
+                break;
             case JOGANDO:
                 InputdoJogo(tecla);
                 break;
-            default: // isso daqui simplifica pra toda vez que a tecla ESC for pressionada, o jogo volta pro menu principal, evitando aquele monte de elseif que ngm aguenta :sob:
+            default:
                 if (tecla == KeyEvent.VK_ESCAPE) {
                     EstadoAtual = GameState.TITULO;
                 }
@@ -416,6 +456,16 @@ class GamePanel extends JPanel implements KeyListener {
                 break;
         }
     }
+    
+    private void InputdoHistoria(int tecla) {
+        if (tecla == KeyEvent.VK_RIGHT || tecla == KeyEvent.VK_DOWN) {
+            numpg++;
+        } else if (tecla == KeyEvent.VK_LEFT || tecla == KeyEvent.VK_UP) {
+            numpg--;
+        }
+        // Garante que numpg fique entre 1 e 7
+        numpg = Math.max(1, Math.min(numpg, 7));
+    }
 
     private void InputdoJogo(int tecla) {
         if (tecla == KeyEvent.VK_ESCAPE) {
@@ -427,6 +477,7 @@ class GamePanel extends JPanel implements KeyListener {
         switch (opcaoSelecionada) {
             case 0: // iniciar
                 EstadoAtual = GameState.JOGANDO;
+                numpg = 1; // Reinicia na página 1
                 ResetarPontuacoes();
                 break;
             case 1: // história
