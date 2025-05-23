@@ -22,6 +22,7 @@ import javax.swing.Timer;
 // Adicionar um botao de atirar: 
 // que faz o player atirar um jato de agua, que se em contato com o mesmo x e y de qualquer arvore, ela muda de sprite e adiciona 10 pontos ao player
 // (o jato sai do mesmo x e y do player, e vai para cima.)
+// se acertarem a arvore, ela muda de sprite e depois de 5 acertos, a arvore muda de sprite, e esse ciclo se repete até que a arvore se torne uma arvore normal, e pare de atirar faiscas.
 
 // Adicionar as arvores:
 // o comportamento das arvores é simples, aparecem pelo menos umas 3 na tela em alguns lugares aleatorios utilizando do sprite /assets/arvoreCarbonizada.png
@@ -30,10 +31,12 @@ import javax.swing.Timer;
 
 // Adicionar faiscas de fogo:
 // o comportamento das faiscas pode ser um pouco mais complicadinho mas, enfim, baiscamente elas saem de qualquer sprite de arvore que esteja queimada ( /assets/arvoreQueimando.png , /assets/arvoreMeioQueimada.png e /assets/arvoreCarbonizando.png)
+// e o mesmo comportamento da grama se repete com as arvores, elas tem 4 estagios, Grama, GramaMeioQueimada, GramaQueimando e GramaCarbonizando
+// ah sim, o chao e as arvores iniciam com sprite de carbonizando, depois das ações abaixo, elas mudam de sprite
 // se atingir o mesmo X e Y do player, o player perde 1 de HP mas, uns segundinhos que voces podem definir ai pra ter invencibilidade
 // Porque se atingir o msm X e Y do player, ele pode ficar diminuindo o HP infinitamente, oque faz o player fucking morrer
 
-// se voce apagar todas as arvores, va pra tela de vitoria
+// se voce apagar o fogo de todas as arvores, va pra tela de vitoria
 
 //simples :D
 
@@ -49,7 +52,8 @@ class GamePanel extends JPanel implements KeyListener {
         HISTORIA, 
         CREDITOS, 
         EASTEREGG,
-        GAMEOVER
+        GAMEOVER,
+        VITORIA
     }
 
     // estado atual do jogo
@@ -100,7 +104,7 @@ class GamePanel extends JPanel implements KeyListener {
     private ImageIcon Gato;
     private BufferedImage MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem;
     private BufferedImage tabua, coracao, moldura, bagulho;
-    private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete;
+    private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez;
 
     // assets de arvore
     private BufferedImage arvoren, arvoremq, arvoreq, arvorec;
@@ -154,6 +158,9 @@ class GamePanel extends JPanel implements KeyListener {
             pgcinco = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgcinco.png"));
             pgseis = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgseis.png"));
             pgsete = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgsete.png"));
+            pgoito = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgoito.png"));
+            pgnove = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgnove.png"));
+            pgdez = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgdez.png"));
             
             // assets de arvore
 
@@ -242,7 +249,27 @@ class GamePanel extends JPanel implements KeyListener {
             case GAMEOVER:
                 desenharGameOver(g);
                 break;
+            case VITORIA:
+                desenharVitoria(g);
+                break;
         }
+    }
+
+    private void desenharVitoria(Graphics g) {
+
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        
+        g.setColor(Color.WHITE);
+        
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+        desenharTextoCentralizado(g, "Vitoria", 300);
+        if (SegFonteCustomizada != null) {
+            g.setFont(SegFonteCustomizada);
+        }
+        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
     }
 
     private void desenharJogo(Graphics g) {
@@ -370,7 +397,7 @@ class GamePanel extends JPanel implements KeyListener {
 
         g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
         g.drawImage(bagulho, 369, 550, 500, 100, this);
-        BufferedImage[] paginas = {pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete};
+        BufferedImage[] paginas = {pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez};
        
         
 
@@ -450,6 +477,7 @@ class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
+
     // mesma coisa de cima mas pro titulo
     private void InputdoTitulo(int tecla) {
         switch (tecla) {
@@ -477,7 +505,7 @@ class GamePanel extends JPanel implements KeyListener {
             numpg--;
         }
         // Garante que numpg fique entre 1 e 7
-        numpg = Math.max(1, Math.min(numpg, 7));
+        numpg = Math.max(1, Math.min(numpg, 10));
         if (tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
         }
@@ -486,6 +514,13 @@ class GamePanel extends JPanel implements KeyListener {
     private void InputdoJogo(int tecla) {
         if (tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
+        }
+        if (tecla == KeyEvent.VK_SPACE) {
+            // Aqui você pode adicionar a lógica para atirar
+            // Exemplo: atirarJatoDeAgua();
+        }
+        if (tecla == KeyEvent.VK_V) {
+            EstadoAtual = GameState.VITORIA;
         }
     }
 
