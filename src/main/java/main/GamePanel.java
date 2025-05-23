@@ -184,6 +184,7 @@ class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+    
 
     // aqui a gente vai configurar o painel, como a cor de fundo e o keylistener
     private void configurarPainel() {
