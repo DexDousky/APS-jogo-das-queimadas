@@ -11,6 +11,8 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -100,10 +102,18 @@ class GamePanel extends JPanel implements KeyListener {
 
     // assets do jogo.
     private BufferedImage TituloBG, CredBG, HistoriaBG;
+
+    // assets de background
     private BufferedImage personagemImagem, Grama;
     private ImageIcon Gato;
+
+    // assets de icones de dev
     private BufferedImage MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem;
+
+    // assets de hud
     private BufferedImage tabua, coracao, moldura, bagulho;
+
+    // assets de história
     private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez;
 
     // assets de arvore
@@ -127,8 +137,7 @@ class GamePanel extends JPanel implements KeyListener {
             coracao = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Coracao.png"));
             moldura = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/moldura.png"));
             bagulho = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/bagulho.png"));
-
-
+            
             // BGs
             
             TituloBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
@@ -184,7 +193,121 @@ class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+    class projetil{
+        int x,y;
+        static final int VELOCIDADE = -15;
+
+        public projetil(int x, int y){
+            this.x = x+40;
+            this.y = y;
+        }
+        public void atualizar(){
+            y += VELOCIDADE;
+        }
+    }
+
+    class arvore{
+        int x,y;
+        int estarv; // 0 = normal, 1 = queimando, 2 = meio queimando, 3 = carbonizando
+        int pontarv;
+        boolean ativa;
+
+        public arvore(int x, int y){
+            this.x = x;
+            this.y = y;
+            this.estarv = 0;
+            this.pontarv = 0;
+            this.ativa = true;
+        }
+    } 
+
+    class fogin{
+        int x, y;
+        double VELOCIDADEX;
+        double VELOCIDADEY;
+
+        public fogin(int x, int y){
+            this.x = x+25;
+            this.y = y+25;
+            this.VELOCIDADEX = (Math.random()- 0.5) * 2;
+            this.VELOCIDADEY = Math.random() * 4 - 2;
+        }
+        public void atualizar(){
+            x += VELOCIDADEX;
+            y += VELOCIDADEY;
+        }
+    }
+
+    private final ArrayList<arvore> arv = new ArrayList<>();
+    private final ArrayList<projetil> proje = new ArrayList<>();
+    private final ArrayList<fogin> fogin = new ArrayList<>();
+
+    private boolean invencivel = false;
+    private long danoFinal;
+    private final int Iframe = 2000;
+
+    private void veriColisoes(){
+        for(projetil p: new ArrayList<>(proje)){
+            for(arvore a: new ArrayList<>(arv)){
+                if (colidiu(p.x, p.y, 10, 20, a.x, a.y, 100,100)){
+                    a.pontarv++;
+                    proje.remove(p);
+
+                    if(a.pontarv >=3){
+                        a.estarv++;
+                        a.pontarv = 0;
+                        pontuacao += 10;
+
+                        if(a.estarv >= 3){
+                            pontuacao = + 100;
+                            a.ativa = false;
+                            arv.remove(a);
+                            verificarVitoria();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Verifica colisão
+
+        if(!invencivel) {
+        for(fogin faisca : new ArrayList<>(fogin)) {
+            if(colidiu(posX, posY, 100, 100, faisca.x, faisca.y, 10, 10)) {
+                HP--;
+                invencivel = true;
+                danoFinal = System.currentTimeMillis();
+                if(HP <= 0) EstadoAtual = GameState.GAMEOVER;
+                break;
+            }
+        }
+    }
     
+        // Atualizar invencibilidade
+        if(invencivel && System.currentTimeMillis() - danoFinal > Iframe) {
+        invencivel = false;
+        }
+    }
+
+    // aqui a gente vai verificar a colisão dos retãngulos
+    //x1, y1 // Canto superior esquerdo 1° ret
+    //w1, h1 // Largura e altura do 1° ret
+    //x2, y2 // Canto superior esquerdo 2° ret
+    //w2, h2 // Largura e altura 2° ret
+
+    private boolean colidiu(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+    return x1 < x2 + w2 &&  //horizontal
+           x1 + w1 > x2 &&  //horizontal
+           y1 < y2 + h2 &&  //vertical
+           y1 + h1 > y2;    //Vertical
+        }
+
+    private void verificarVitoria() {
+        if(arv.isEmpty()) {
+            EstadoAtual = GameState.VITORIA;
+        }
+    }
 
     // aqui a gente vai configurar o painel, como a cor de fundo e o keylistener
     private void configurarPainel() {
@@ -274,32 +397,64 @@ class GamePanel extends JPanel implements KeyListener {
     }
 
     private void desenharJogo(Graphics g) {
-        //desenhar o BG (Background)
-        if (Grama != null) {
+
+        // Desenhar árvores
+        for(arvore a : arv) {
+        BufferedImage img;
+            switch(a.estarv) {
+            case 0: img = arvoren; break;
+            case 1: img = arvoreq; break;
+            case 2: img = arvoremq; break;
+            default: img = arvorec;
+            }
+            g.drawImage(img, a.x, a.y, 100, 100, this);
+            }   
+
+            // Desenhar projétil (jatos de água)
+
+            g.setColor(new Color(0, 150, 255));
+            for(projetil p : proje) {
+            g.fillRect(p.x, p.y, 10, 20);
+            }
+
+            // Desenhar foguinho
+            g.setColor(Color.ORANGE);
+            for(fogin f : fogin) {
+            g.fillOval(f.x, f.y, 10, 10);
+            }
+
+            // Iframe
+            if(invencivel) {
+            g.setColor(new Color(255, 255, 255, 100));
+            g.fillRect(posX, posY, 100, 100);
+            }
+
+            //desenhar o BG (Background)
+            if (Grama != null) {
             g.drawImage(Grama, 0, 0, getWidth(), getHeight(), this);
-        }
+            }
 
-        // o personagem principal
-        if (personagemImagem != null) {
+            // o personagem principal
+            if (personagemImagem != null) {
             g.drawImage(personagemImagem, posX, posY, 100, 100, this);
-        }
+            }
 
-        // a hud
-        g.drawImage(tabua, 0, 0, getWidth(), 78, this);
+            // a hud
+            g.drawImage(tabua, 0, 0, getWidth(), 78, this);
         
-        // definir a cor e a fonte a serem utilizadas aqui nesse estado
-        g.setColor(Color.WHITE);
-        g.setFont(SegFonteCustomizada.deriveFont(50f));
+            // definir a cor e a fonte a serem utilizadas aqui nesse estado
+            g.setColor(Color.WHITE);
+            g.setFont(SegFonteCustomizada.deriveFont(50f));
 
-        // desenhar a pontuação e o tempo na hud
-        g.drawString("Pontos: " + pontuacao, 680, 53);
-        String tempoFormatado = String.format("%02d:%02d", tempoRestante/60, tempoRestante%60);
-        g.drawString("Tempo: " + tempoFormatado, 940, 53);
+            // desenhar a pontuação e o tempo na hud
+            g.drawString("Pontos: " + pontuacao, 680, 53);
+            String tempoFormatado = String.format("%02d:%02d", tempoRestante/60, tempoRestante%60);
+            g.drawString("Tempo: " + tempoFormatado, 940, 53);
 
-        // desenhar a vida do jogador com base no HP
-        for (int i = 0; i < HP; i++) {
+            // desenhar a vida do jogador com base no HP
+            for (int i = 0; i < HP; i++) {
             g.drawImage(coracao, 70 + (i * 65), 15, 50, 50, this);
-        }
+            }
     }
 
     // aqui é para a tela de titulo
@@ -399,8 +554,6 @@ class GamePanel extends JPanel implements KeyListener {
         g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
         g.drawImage(bagulho, 369, 550, 500, 100, this);
         BufferedImage[] paginas = {pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez};
-       
-        
 
         // Desenha página primeiro
         if (numpg >= 1 && numpg <= paginas.length) {
@@ -505,21 +658,26 @@ class GamePanel extends JPanel implements KeyListener {
         } else if (tecla == KeyEvent.VK_LEFT || tecla == KeyEvent.VK_A) {
             numpg--;
         }
-        // Garante que numpg fique entre 1 e 7
+        
+        // Garante que numpg fique entre 1 e 10 
+
         numpg = Math.max(1, Math.min(numpg, 10));
+
         if (tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
         }
     }
 
     private void InputdoJogo(int tecla) {
+
         if (tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
         }
+
         if (tecla == KeyEvent.VK_SPACE) {
-            // Aqui você pode adicionar a lógica para atirar
-            // Exemplo: atirarJatoDeAgua();
+           proje.add(new projetil(posX, posY));
         }
+
         if (tecla == KeyEvent.VK_V) {
             EstadoAtual = GameState.VITORIA;
         }
@@ -547,6 +705,16 @@ class GamePanel extends JPanel implements KeyListener {
         ultimoTempoAtualizado = 0;
         posX = 575;
         posY = 600;
+        proje.clear();
+        arv.clear();
+        fogin.clear();
+
+        Random Ale = new Random();
+        for (int i = 0; i < 3; i++) {
+            int x = Ale.nextInt(getWidth() - 80);
+            int y = Ale.nextInt(getHeight() - 95);
+            arv.add(new arvore(x, y));
+        }
     }
 
     private void atualizarPosicao() {
@@ -560,6 +728,23 @@ class GamePanel extends JPanel implements KeyListener {
         if (teclasPressionadas[KeyEvent.VK_LEFT]) posX -= VELOCIDADE;
         if (teclasPressionadas[KeyEvent.VK_RIGHT]) posX += VELOCIDADE;
 
+        for(projetil p : new ArrayList<>(proje)){
+            p.atualizar();
+            if(p.y <0) proje.remove(p);
+        }
+        for(fogin f : new ArrayList<>(fogin)){
+            f.atualizar();
+            if(f.y >getHeight())fogin.remove(f);
+        } 
+    
+        if(Math.random() < 0.02) {
+        for(arvore arvore : arv) {
+            if(arvore.estarv < 3 && arvore.ativa) {
+                fogin.add(new fogin(arvore.x, arvore.y));
+            }
+        }
+    }
+        veriColisoes();
     }
 
     @Override
