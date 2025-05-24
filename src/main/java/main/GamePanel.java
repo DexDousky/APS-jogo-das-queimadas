@@ -24,8 +24,6 @@ import javax.swing.Timer;
 // ==================================================
 // CLASSE PRINCIPAL DO JOGO
 // ==================================================
-
-
 class GamePanel extends JPanel implements KeyListener {
     // ==================================================
     // ESTADOS DO JOGO
@@ -58,7 +56,6 @@ class GamePanel extends JPanel implements KeyListener {
     // ==================================================
     // SISTEMA DE JOGO
     // ==================================================
-    
     private GameState EstadoAtual = GameState.TITULO;
     private int pontuacao = 0;
     private int tempoRestante = 120;
@@ -89,7 +86,7 @@ class GamePanel extends JPanel implements KeyListener {
     private ImageIcon Gato;
     private BufferedImage MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem;
     private BufferedImage tabua, coracao, moldura, bagulho;
-    private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez;
+    private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez, pgonze;
     private BufferedImage arvoren, arvoremq, arvoreq, arvorec;
 
     
@@ -146,6 +143,7 @@ class GamePanel extends JPanel implements KeyListener {
             pgoito = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgoito.png"));
             pgnove = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgnove.png"));
             pgdez = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgdez.png"));
+            pgonze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgonze.png"));
 
             arvoren = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreNormal.png"));
             arvoremq = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreMeioQueimada.png"));
@@ -188,7 +186,6 @@ class GamePanel extends JPanel implements KeyListener {
     // ==================================================================
     // COLISÕES, ATUALIZAÇÕES, POSIÇÕES, CHEQUES E CLASSES ADICIONAIS
     // ==================================================================
-
     private void IniciarArvores() {
         int margem = 50;
         int larguraArea = getWidth() - margem * 2;
@@ -217,6 +214,7 @@ class GamePanel extends JPanel implements KeyListener {
             Arvores.add(new Arvore(x, y));
         }
     }
+
     private void ResetarPontuacoes() {
         HP = maxHP;
         pontuacao = 0;
@@ -258,6 +256,7 @@ class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
+
     private void ChequeDeColizoesdaArvore() {
         for (int i = Projeteis.size() - 1; i >= 0; i--) {
             Projetil p = Projeteis.get(i);
@@ -327,6 +326,7 @@ class GamePanel extends JPanel implements KeyListener {
             }
         }
     }
+    
     private class Arvore {
         int x, y;
         int contadorDeAcertos = 0;
@@ -387,6 +387,7 @@ class GamePanel extends JPanel implements KeyListener {
             return x >= px && x <= px + pw && y >= py && y <= py + ph;
         }
     }
+    
     // ==================================================
     // RENDERIZAÇÃO GRÁFICA
     // ==================================================
@@ -405,53 +406,20 @@ class GamePanel extends JPanel implements KeyListener {
             case VITORIA -> desenharVitoria(g);
         }
     }
-    private void desenharTutorial(Graphics g){
 
+    private void desenharTelaTitulo(Graphics g) {
         if (TituloBG != null) {
             g.drawImage(TituloBG, 0, 0, getWidth(), getHeight(), this);
         }
 
-        g.setColor(new Color(0, 0, 0, 200));
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.WHITE);
-
         if (FonteCustomizada != null) {
             g.setFont(FonteCustomizada);
         }
 
-        desenharTextoCentralizado(g, "TUTORIAL", 80);
-
-        if (SegFonteCustomizada != null) {
-            g.setFont(SegFonteCustomizada.deriveFont(28f));
+        for (int i = 0; i < opcoes.length; i++) {
+            g.setColor(i == opcaoSelecionada ? Color.YELLOW : Color.WHITE);
+            desenharTextoCentralizado(g, opcoes[i], 510 + i * 60);
         }
-
-        g.drawString("Atire jatos de agua nas árvores, utilizando a Tecla ESPAÇO", 10, 200);
-        g.drawString("e DESVIE das faiscas de fogo que as mesmas atiram em sua direção!!",10,230);
-        g.drawString("Manuseie o seu movimento e mira com as SETAS para não ser atingido, senão...",10,260);
-        g.drawString("VOCÊ TÁ FRITO!!",10,290);
-        g.drawString("Essa é a representação da sua vida:",10,320);                                         g.drawImage(coracao, 380, 295, 30, 30, this);
-        g.drawString("Se você for atingido por uma faisca voce perde um desses, mas se apagar ",10,350);
-        g.drawString("o fogo de uma arvore você recupera um,então tome cuidado para não perder tudo",10,380);
-        g.drawString("senão você MORRE.",10,410);
-
-        if (SegFonteCustomizada != null) {
-            g.setFont(SegFonteCustomizada);
-        }
-        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
-    }
-
-    private void desenharVitoria(Graphics g) {
-        g.setColor(new Color(0, 0, 0, 200));
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.WHITE);
-        if (FonteCustomizada != null) {
-            g.setFont(FonteCustomizada);
-        }
-        desenharTextoCentralizado(g, "Vitoria", 300);
-        if (SegFonteCustomizada != null) {
-            g.setFont(SegFonteCustomizada);
-        }
-        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
     }
 
     private void desenharJogo(Graphics g) {
@@ -496,44 +464,68 @@ class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    private void desenharTelaTitulo(Graphics g) {
+    private void desenharTelaHistoria(Graphics g) {
+        g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
+        g.drawImage(bagulho, 369, 550, 500, 100, this);
+        BufferedImage[] paginas = { pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez,pgonze };
+
+        if (numpg >= 1 && numpg <= paginas.length) {
+            g.drawImage(paginas[numpg - 1], 380, 95, 490, 341, this);
+        }
+
+        g.drawImage(moldura, 365, 80, 543, 394, this);
+
+        g.setColor(Color.WHITE);
+        if (SegFonteCustomizada != null) {
+            g.setFont(SegFonteCustomizada);
+        }
+
+        desenharTextoCentralizado(g, "Página: " + numpg, 610);
+
+        g.setColor(Color.WHITE);
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+
+        desenharTextoCentralizado(g, "HISTORIA", 70);
+        g.setColor(Color.WHITE);
+        g.setFont(SegFonteCustomizada.deriveFont(30f));
+        g.drawString("Pressione ESQUERDA ou DIREITA para mudar as páginas e ESC para voltar", 230, 690);
+    }
+
+    private void desenharTutorial(Graphics g){
+
         if (TituloBG != null) {
             g.drawImage(TituloBG, 0, 0, getWidth(), getHeight(), this);
         }
 
-        if (FonteCustomizada != null) {
-            g.setFont(FonteCustomizada);
-        }
-
-        for (int i = 0; i < opcoes.length; i++) {
-            g.setColor(i == opcaoSelecionada ? Color.YELLOW : Color.WHITE);
-            desenharTextoCentralizado(g, opcoes[i], 510 + i * 60);
-        }
-    }
-
-    private void desenharGameOver(Graphics g) {
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.WHITE);
+
         if (FonteCustomizada != null) {
             g.setFont(FonteCustomizada);
         }
-        desenharTextoCentralizado(g, "Game Over", 300);
+
+        desenharTextoCentralizado(g, "TUTORIAL", 80);
+
+        if (SegFonteCustomizada != null) {
+            g.setFont(SegFonteCustomizada.deriveFont(28f));
+        }
+
+        g.drawString("Atire jatos de agua nas árvores, utilizando a Tecla ESPAÇO", 10, 200);
+        g.drawString("e DESVIE das faiscas de fogo que as mesmas atiram em sua direção!!",10,230);
+        g.drawString("Manuseie o seu movimento e mira com as SETAS para não ser atingido, senão...",10,260);
+        g.drawString("VOCÊ TÁ FRITO!!",10,290);
+        g.drawString("Essa é a representação da sua vida:",10,320);                                         g.drawImage(coracao, 380, 295, 30, 30, this);
+        g.drawString("Se você for atingido por uma faisca voce perde um desses, mas se apagar ",10,350);
+        g.drawString("o fogo de uma arvore você recupera um,então tome cuidado para não perder tudo",10,380);
+        g.drawString("senão você MORRE.",10,410);
+
         if (SegFonteCustomizada != null) {
             g.setFont(SegFonteCustomizada);
         }
         desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
-    }
-
-    private void desenharEasterEgg(Graphics g) {
-        if (Gato != null) {
-            g.drawImage(Gato.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-        if (FonteCustomizada != null) {
-            g.setFont(FonteCustomizada);
-        }
-        g.setColor(Color.WHITE);
-        desenharTextoCentralizado(g, "yIIppiii", 300);
     }
 
     private void desenharCreditos(Graphics g) {
@@ -579,33 +571,43 @@ class GamePanel extends JPanel implements KeyListener {
         g.drawString("Pressione ESC para voltar", 740, 690);
     }
 
-    private void desenharTelaHistoria(Graphics g) {
-        g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
-        g.drawImage(bagulho, 369, 550, 500, 100, this);
-        BufferedImage[] paginas = { pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez };
-
-        if (numpg >= 1 && numpg <= paginas.length) {
-            g.drawImage(paginas[numpg - 1], 380, 95, 490, 341, this);
-        }
-
-        g.drawImage(moldura, 365, 80, 543, 394, this);
-
-        g.setColor(Color.WHITE);
-        if (SegFonteCustomizada != null) {
-            g.setFont(SegFonteCustomizada);
-        }
-
-        desenharTextoCentralizado(g, "Página: " + numpg, 610);
-
+    private void desenharVitoria(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.WHITE);
         if (FonteCustomizada != null) {
             g.setFont(FonteCustomizada);
         }
+        desenharTextoCentralizado(g, "Vitoria", 300);
+        if (SegFonteCustomizada != null) {
+            g.setFont(SegFonteCustomizada);
+        }
+        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
+    }
 
-        desenharTextoCentralizado(g, "HISTORIA", 70);
+    private void desenharGameOver(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 200));
+        g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.WHITE);
-        g.setFont(SegFonteCustomizada.deriveFont(30f));
-        g.drawString("Pressione ESQUERDA ou DIREITA para mudar as páginas e ESC para voltar", 230, 690);
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+        desenharTextoCentralizado(g, "Game Over", 300);
+        if (SegFonteCustomizada != null) {
+            g.setFont(SegFonteCustomizada);
+        }
+        desenharTextoCentralizado(g, "[Pressione ESC para voltar]", 600);
+    }
+
+    private void desenharEasterEgg(Graphics g) {
+        if (Gato != null) {
+            g.drawImage(Gato.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+        if (FonteCustomizada != null) {
+            g.setFont(FonteCustomizada);
+        }
+        g.setColor(Color.WHITE);
+        desenharTextoCentralizado(g, "yIIppiii", 300);
     }
 
     private void desenharTextoCentralizado(Graphics g, String texto, int y) {
@@ -667,7 +669,7 @@ class GamePanel extends JPanel implements KeyListener {
         } else if (tecla == KeyEvent.VK_LEFT || tecla == KeyEvent.VK_A) {
             numpg--;
         }
-        numpg = Math.max(1, Math.min(numpg, 10));
+        numpg = Math.max(1, Math.min(numpg, 11)); // AQUI SÓ FALA Q O NUMERO MINIMO DE PAGINAS É 1 E O MAXIMO É 11, SE NÃO PASSA DISSO E NÃO APARECE NENHUMA PAGINA NA MOLDURA
         if (tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
         }
@@ -700,12 +702,6 @@ class GamePanel extends JPanel implements KeyListener {
         }
     }
     
-    
-    
-    
-    
-    
-
     @Override
     public void keyReleased(KeyEvent e) {
         teclasPressionadas[e.getKeyCode()] = false;
