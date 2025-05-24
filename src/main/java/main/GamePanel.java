@@ -86,10 +86,8 @@ class GamePanel extends JPanel implements KeyListener {
     private ImageIcon Gato;
     private BufferedImage MatheusImagem, JoaoImagem, AugustoImagem, DiogoImagem, MariaImagem;
     private BufferedImage tabua, coracao, moldura, bagulho;
-    private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez, pgonze;
+    private BufferedImage pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez, pgonze, pgdoze, pgtreze, pgquatorze;
     private BufferedImage arvoren, arvoremq, arvoreq, arvorec;
-
-    
 
     // ==================================================
     // INICIALIZAÇÃO DO JOGO
@@ -144,6 +142,9 @@ class GamePanel extends JPanel implements KeyListener {
             pgnove = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgnove.png"));
             pgdez = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgdez.png"));
             pgonze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgonze.png"));
+            pgdoze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgdoze.png"));
+            pgtreze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgtreze.png"));
+            pgquatorze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgquatorze.png"));
 
             arvoren = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreNormal.png"));
             arvoremq = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreMeioQueimada.png"));
@@ -181,7 +182,6 @@ class GamePanel extends JPanel implements KeyListener {
         });
         gameTimer.start();
     }
-
     
     // ==================================================================
     // COLISÕES, ATUALIZAÇÕES, POSIÇÕES, CHEQUES E CLASSES ADICIONAIS
@@ -235,7 +235,6 @@ class GamePanel extends JPanel implements KeyListener {
         }
         EstadoAtual = GameState.VITORIA;
     }
-
 
     private void atualizarPosicaoJ() {
         posX = Math.max(0, Math.min(posX, getWidth() - 100));
@@ -467,7 +466,7 @@ class GamePanel extends JPanel implements KeyListener {
     private void desenharTelaHistoria(Graphics g) {
         g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
         g.drawImage(bagulho, 369, 550, 500, 100, this);
-        BufferedImage[] paginas = { pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez,pgonze };
+        BufferedImage[] paginas = { pgum, pgdois, pgtres, pgquatro, pgcinco, pgseis, pgsete, pgoito, pgnove, pgdez, pgonze, pgdoze, pgtreze, pgquatorze };
 
         if (numpg >= 1 && numpg <= paginas.length) {
             g.drawImage(paginas[numpg - 1], 380, 95, 490, 341, this);
@@ -487,10 +486,16 @@ class GamePanel extends JPanel implements KeyListener {
             g.setFont(FonteCustomizada);
         }
 
-        desenharTextoCentralizado(g, "HISTORIA", 70);
+        desenharTextoCentralizado(g, "HISTORIA", 60);
         g.setColor(Color.WHITE);
         g.setFont(SegFonteCustomizada.deriveFont(30f));
         g.drawString("Pressione ESQUERDA ou DIREITA para mudar as páginas e ESC para voltar", 230, 690);
+        
+        if (numpg <11){
+        desenharTextoCentralizado(g, "Desenho por: @DexDousky", 78);
+        } else{
+        desenharTextoCentralizado(g, "Desenho por: @Diogofreitassavastano", 78);
+        }
     }
 
     private void desenharTutorial(Graphics g){
@@ -669,7 +674,7 @@ class GamePanel extends JPanel implements KeyListener {
         } else if (tecla == KeyEvent.VK_LEFT || tecla == KeyEvent.VK_A) {
             numpg--;
         }
-        numpg = Math.max(1, Math.min(numpg, 11)); // AQUI SÓ FALA Q O NUMERO MINIMO DE PAGINAS É 1 E O MAXIMO É 11, SE NÃO PASSA DISSO E NÃO APARECE NENHUMA PAGINA NA MOLDURA
+        numpg = Math.max(1, Math.min(numpg, 14)); // AQUI SÓ FALA Q O NUMERO MINIMO DE PAGINAS É 1 E O MAXIMO É 11, SE NÃO PASSA DISSO E NÃO APARECE NENHUMA PAGINA NA MOLDURA
         if (tecla == KeyEvent.VK_ESCAPE) {
             EstadoAtual = GameState.TITULO;
         }
