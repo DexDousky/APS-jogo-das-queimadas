@@ -728,6 +728,4 @@ class GamePanel extends JPanel implements KeyListener {
             return y < 0;
         }
     }
-
-    
 }
