@@ -407,27 +407,32 @@ class GamePanel extends JPanel implements KeyListener {
     }
     private void desenharTutorial(Graphics g){
 
-        
+        if (TituloBG != null) {
+            g.drawImage(TituloBG, 0, 0, getWidth(), getHeight(), this);
+        }
+
         g.setColor(new Color(0, 0, 0, 200));
         g.fillRect(0, 0, getWidth(), getHeight());
-        if (HistoriaBG != null) {
-            g.drawImage(HistoriaBG, 0, 0, getWidth(), getHeight(), this);
-        }
         g.setColor(Color.WHITE);
 
         if (FonteCustomizada != null) {
             g.setFont(FonteCustomizada);
         }
 
-        desenharTextoCentralizado(g, "TUTORIAL", 100);
-        g.drawString("Como jogar", 10, 150);
+        desenharTextoCentralizado(g, "TUTORIAL", 80);
 
         if (SegFonteCustomizada != null) {
-            g.setFont(SegFonteCustomizada.deriveFont(10f));
+            g.setFont(SegFonteCustomizada.deriveFont(28f));
         }
-        g.drawString("Atire com a tecla ESPAÇO nas arvores\ne desvie das faiscas de fogo que\nas arvores em chamas estao atirando!\nManege seu movimento e mira para não ser atigindo...\nsenão você ta FRITO!!", 10, 200);
 
-        desenharTextoCentralizado(g, "", 190);
+        g.drawString("Atire jatos de agua nas árvores, utilizando a Tecla ESPAÇO", 10, 200);
+        g.drawString("e DESVIE das faiscas de fogo que as mesmas atiram em sua direção!!",10,230);
+        g.drawString("Manuseie o seu movimento e mira com as SETAS para não ser atingido, senão...",10,260);
+        g.drawString("VOCÊ TÁ FRITO!!",10,290);
+        g.drawString("Essa é a representação da sua vida:",10,320);                                         g.drawImage(coracao, 380, 295, 30, 30, this);
+        g.drawString("Se você for atingido por uma faisca voce perde um desses, mas se apagar ",10,350);
+        g.drawString("o fogo de uma arvore você recupera um,então tome cuidado para não perder tudo",10,380);
+        g.drawString("senão você MORRE.",10,410);
 
         if (SegFonteCustomizada != null) {
             g.setFont(SegFonteCustomizada);
@@ -481,6 +486,7 @@ class GamePanel extends JPanel implements KeyListener {
 
         for (int i = 0; i < HP; i++) {
             g.drawImage(coracao, 70 + (i * 65), 15, 50, 50, this);
+
         }
 
         if(Invencibilidade) {
