@@ -7,6 +7,5 @@
 - @Sr.DarkFrame
 - @GUGU369a
 - @Diogodefreitassavastano
-- e
 - Vortex
 </p>
