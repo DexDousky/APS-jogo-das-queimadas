@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 
-// Oque falta?
+// Oque falta? Eu não vou tirar esses textos giga pq eu vou DORMIR, obrigado KKKK
 
 // Adicionar um botao de atirar: 
 // que faz o player atirar um jato de agua, que se em contato com o mesmo x e y de qualquer arvore, ela muda de sprite e adiciona 10 pontos ao player
