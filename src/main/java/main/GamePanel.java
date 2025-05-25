@@ -21,9 +21,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-// ==================================================
+// ====================================================
 // CLASSE PRINCIPAL DO JOGO
-// ==================================================
+// ====================================================
 class GamePanel extends JPanel implements KeyListener {
     // ==================================================
     // ESTADOS DO JOGO
@@ -115,22 +115,18 @@ class GamePanel extends JPanel implements KeyListener {
             coracao = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/hud/Coracao.png"));
             moldura = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/moldura.png"));
             bagulho = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/bagulho.png"));
-
             TituloBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/TITULO_bg.png"));
             CredBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/credfundo.png"));
             HistoriaBG = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/background.png"));
-
             jogador = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/jogador.png"));
             invencivel = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/invencivel.png"));
             Gato = new ImageIcon(getClass().getClassLoader().getResource("assets/yippe.gif"));
             Grama = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/grama.png"));
-
             MatheusImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Matheus.png"));
             JoaoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/João.png"));
             AugustoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Augusto.png"));
             DiogoImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Diogo.png"));
             MariaImagem = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/icones/Maria.png"));
-
             pgum = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgum.png"));
             pgdois = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgdois.png"));
             pgtres = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgtres.png"));
@@ -145,20 +141,16 @@ class GamePanel extends JPanel implements KeyListener {
             pgdoze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgdoze.png"));
             pgtreze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgtreze.png"));
             pgquatorze = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/historia/pgquatorze.png"));
-
             arvoren = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreNormal.png"));
             arvoremq = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreMeioQueimada.png"));
             arvoreq = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreQueimando.png"));
             arvorec = ImageIO.read(getClass().getClassLoader().getResourceAsStream("assets/arvoreCarbonizando.png"));
-
             InputStream fonteStream = getClass().getClassLoader().getResourceAsStream("assets/fontes/Uicool.ttf");
             FonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream).deriveFont(50f);
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(FonteCustomizada);
-
             InputStream fonteStream2 = getClass().getClassLoader().getResourceAsStream("assets/fontes/Jersey_15.ttf");
             SegFonteCustomizada = Font.createFont(Font.TRUETYPE_FONT, fonteStream2).deriveFont(50f);
-
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
