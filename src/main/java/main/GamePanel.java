@@ -517,7 +517,7 @@ class GamePanel extends JPanel implements KeyListener {
         g.drawString("Essa é a representação da sua vida:",10,320);                                         g.drawImage(coracao, 380, 295, 30, 30, this);
         g.drawString("Se você for atingido por uma faisca voce perde um desses, mas se apagar ",10,350);
         g.drawString("o fogo de uma arvore você recupera um,então tome cuidado para não perder tudo",10,380);
-        g.drawString("senão você MORRE.",10,410);
+        g.drawString("PRINCPIALMENTE com relação ao tempo, se ele acabar... você MORRE.",10,410);
 
         if (SegFonteCustomizada != null) {
             g.setFont(SegFonteCustomizada);
